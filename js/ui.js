@@ -106,6 +106,26 @@ window.UI = (() => {
     }, 50);
   }
 
+  /* ── Subcategory modal ───────────────────────────────────────── */
+  function showSubcategoryModal({ title, label = '', onConfirm }) {
+    showModal({
+      title,
+      body: `
+        <label style="display:block;margin-bottom:4px;font-size:13px;color:var(--text)">Subcategory name</label>
+        <input type="text" id="modal-subcat-name" value="${label}" placeholder="e.g. Dysrhythmias" />`,
+      confirmText: 'Save',
+      onConfirm: () => {
+        const name = document.getElementById('modal-subcat-name').value.trim();
+        if (!name) { toast('Subcategory name required', 'error'); return; }
+        onConfirm(name);
+      }
+    });
+    setTimeout(() => {
+      const input = document.getElementById('modal-subcat-name');
+      if (input) { input.focus(); input.select(); }
+    }, 50);
+  }
+
   /* ── Init ────────────────────────────────────────────────────── */
   function init() {
     _bindModal();
@@ -116,5 +136,5 @@ window.UI = (() => {
     document.getElementById('sidebar-toggle').addEventListener('click', toggleSidebar);
   }
 
-  return { init, toast, showModal, hideModal, showCategoryModal, applyDarkMode, applySidebar };
+  return { init, toast, showModal, hideModal, showCategoryModal, showSubcategoryModal, applyDarkMode, applySidebar };
 })();

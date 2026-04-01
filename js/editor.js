@@ -3,6 +3,7 @@ window.Editor = (() => {
   let _currentId   = null;   // null = new card
   let _stepKey     = null;
   let _catSlug     = null;
+  let _subcatSlug  = null;
 
   const editorEl   = () => document.getElementById('card-editor');
   const titleEl    = () => document.getElementById('card-title-input');
@@ -11,11 +12,12 @@ window.Editor = (() => {
   /* ── Open ──────────────────────────────────────────────────── */
   function open(cardId) {
     const settings = Store.getSettings();
-    _stepKey = settings.activeStep;
-    _catSlug = settings.activeCategory;
-    _currentId = cardId || null;
+    _stepKey    = settings.activeStep;
+    _catSlug    = settings.activeCategory;
+    _subcatSlug = settings.activeSubcategory || null;
+    _currentId  = cardId || null;
 
-    const card = cardId ? Store.getCard(_stepKey, _catSlug, cardId) : null;
+    const card = cardId ? Store.getCard(_stepKey, _catSlug, cardId, _subcatSlug) : null;
 
     titleEl().value      = card ? (card.title || '') : '';
     contentEl().innerHTML = card ? (card.content || '') : '';
@@ -46,11 +48,11 @@ window.Editor = (() => {
       flagged: flagActive
     };
 
-    Store.upsertCard(_stepKey, _catSlug, cardData);
+    Store.upsertCard(_stepKey, _catSlug, cardData, _subcatSlug);
     UI.toast('Card saved', 'success');
     close();
     Render.cardList();
-    Render.updateCategoryCount(_stepKey, _catSlug);
+    Render.updateCategoryCount(_stepKey, _catSlug, _subcatSlug);
   }
 
   /* ── Delete ────────────────────────────────────────────────── */
@@ -61,11 +63,11 @@ window.Editor = (() => {
       body: `<p>Delete <b>${titleEl().value || 'this card'}</b>? This cannot be undone.</p>`,
       confirmText: 'Delete', confirmClass: 'btn-danger',
       onConfirm: () => {
-        Store.deleteCard(_stepKey, _catSlug, _currentId);
+        Store.deleteCard(_stepKey, _catSlug, _currentId, _subcatSlug);
         UI.toast('Card deleted', 'info');
         close();
         Render.cardList();
-        Render.updateCategoryCount(_stepKey, _catSlug);
+        Render.updateCategoryCount(_stepKey, _catSlug, _subcatSlug);
       }
     });
   }

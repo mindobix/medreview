@@ -1,10 +1,11 @@
 /* app.js – entry point, wires everything together */
 window.App = (() => {
 
-  /* ── Navigate to a step + category ─────────────────────────── */
-  function navigateTo(stepKey, catSlug) {
+  /* ── Navigate to a step + category + optional subcategory ────── */
+  function navigateTo(stepKey, catSlug, subcatSlug) {
     Store.setSetting('activeStep', stepKey);
     Store.setSetting('activeCategory', catSlug);
+    Store.setSetting('activeSubcategory', subcatSlug || null);
     Render.stepTabs();
     Render.sidebar();
     Render.cardList();
@@ -15,10 +16,9 @@ window.App = (() => {
     document.querySelectorAll('.tab').forEach(btn => {
       btn.addEventListener('click', () => {
         const stepKey = btn.dataset.step;
-        const cats = Store.getCategories(stepKey);
-        // Pick first category of new step, or null
+        const cats    = Store.getCategories(stepKey);
         const firstCat = cats.length ? cats[0].slug : null;
-        navigateTo(stepKey, firstCat);
+        navigateTo(stepKey, firstCat, null);
       });
     });
   }
@@ -31,44 +31,76 @@ window.App = (() => {
         title: 'Add Category',
         onConfirm: (label, icon) => {
           const slug = Store.upsertCategory(stepKey, { label, icon });
-          navigateTo(stepKey, slug);
+          navigateTo(stepKey, slug, null);
           UI.toast(`Category "${label}" created`, 'success');
         }
       });
     });
   }
 
+  /* ── Summary panel edit/save/cancel ────────────────────────── */
+  function _bindSummaryPanel() {
+    document.getElementById('btn-edit-summary').addEventListener('click', () => {
+      const s = Store.getSettings();
+      const current = Store.getSubcategorySummary(s.activeStep, s.activeCategory, s.activeSubcategory);
+      document.getElementById('subcat-summary-textarea').value = current;
+      document.getElementById('subcat-summary-view').classList.add('hidden');
+      document.getElementById('subcat-summary-edit').classList.remove('hidden');
+      document.getElementById('btn-edit-summary').classList.add('hidden');
+      document.getElementById('subcat-summary-textarea').focus();
+    });
+
+    document.getElementById('btn-save-summary').addEventListener('click', () => {
+      const s = Store.getSettings();
+      const val = document.getElementById('subcat-summary-textarea').value.trim();
+      Store.updateSubcategorySummary(s.activeStep, s.activeCategory, s.activeSubcategory, val);
+      Render.summaryPanel();
+      UI.toast('Summary saved', 'success');
+    });
+
+    document.getElementById('btn-cancel-summary').addEventListener('click', () => {
+      Render.summaryPanel();
+    });
+  }
+
   /* ── Init ───────────────────────────────────────────────────── */
   function init() {
-    // 1. Load state
     Store.load();
-
-    // 2. Init UI helpers (dark mode, sidebar, modal bindings)
     UI.init();
-
-    // 3. Init feature modules
     Editor.init();
     Slideshow.init();
     Search.init();
     IO.init();
 
-    // 4. Wire nav
     _bindStepTabs();
     _bindAddCategory();
+    _bindSummaryPanel();
 
-    // 5. Initial render
     const settings = Store.getSettings();
     let activeStep = settings.activeStep || 'step1';
     let activeCat  = settings.activeCategory;
+    let activeSub  = settings.activeSubcategory;
 
-    // If saved category doesn't exist in this step, fall back to first
+    // Validate saved category still exists
     const cats = Store.getCategories(activeStep);
     if (activeCat && !cats.find(c => c.slug === activeCat)) {
       activeCat = cats.length ? cats[0].slug : null;
+      activeSub = null;
       Store.setSetting('activeCategory', activeCat);
+      Store.setSetting('activeSubcategory', null);
     } else if (!activeCat && cats.length) {
       activeCat = cats[0].slug;
+      activeSub = null;
       Store.setSetting('activeCategory', activeCat);
+    }
+
+    // Validate saved subcategory still exists
+    if (activeCat && activeSub) {
+      const subs = Store.getSubcategories(activeStep, activeCat);
+      if (!subs.find(s => s.slug === activeSub)) {
+        activeSub = null;
+        Store.setSetting('activeSubcategory', null);
+      }
     }
 
     Render.stepTabs();
@@ -76,7 +108,6 @@ window.App = (() => {
     Render.cardList();
   }
 
-  // Boot when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {

@@ -54,14 +54,17 @@ window.Search = (() => {
       return;
     }
 
-    resultsEl.innerHTML = matches.map(({ stepLabel, catLabel, card }) => {
+    resultsEl.innerHTML = matches.map(({ stepLabel, catLabel, subcatLabel, card }) => {
       const plainContent = _stripHtml(card.content || '');
       const idx = plainContent.toLowerCase().indexOf(lc);
       const start = Math.max(0, idx - 60);
       const snippet = (start > 0 ? '…' : '') + plainContent.slice(start, start + 140) + (plainContent.length > start + 140 ? '…' : '');
+      const path = subcatLabel
+        ? `${_esc(stepLabel)} › ${_esc(catLabel)} › ${_esc(subcatLabel)}`
+        : `${_esc(stepLabel)} › ${_esc(catLabel)}`;
       return `
-        <div class="search-result-item" data-step="${card._stepKey || ''}" data-cat="${card._catSlug || ''}" data-id="${card.id}">
-          <div class="search-result-step">${_esc(stepLabel)} › ${_esc(catLabel)}</div>
+        <div class="search-result-item" data-id="${card.id}">
+          <div class="search-result-step">${path}</div>
           <div class="search-result-title">${_highlightMatch(card.title || 'Untitled', term)}</div>
           <div class="search-result-preview">${_highlightMatch(snippet, term)}</div>
         </div>`;
@@ -70,10 +73,10 @@ window.Search = (() => {
     // Attach click handlers using stored metadata
     resultsEl.querySelectorAll('.search-result-item').forEach((el, i) => {
       el.addEventListener('click', () => {
-        const { stepKey, catSlug, card } = matches[i];
-        // Navigate to that step/category then open card
+        const { stepKey, catSlug, subcatSlug, card } = matches[i];
         Store.setSetting('activeStep', stepKey);
         Store.setSetting('activeCategory', catSlug);
+        Store.setSetting('activeSubcategory', subcatSlug || null);
         Render.stepTabs();
         Render.sidebar();
         _clearSearch();

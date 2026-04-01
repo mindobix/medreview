@@ -1,25 +1,32 @@
 /* slideshow.js – full-screen slideshow overlay */
 window.Slideshow = (() => {
-  let _cards     = [];
-  let _index     = 0;
-  let _stepKey   = null;
-  let _catSlug   = null;
-  let _touchX    = 0;
+  let _cards      = [];
+  let _index      = 0;
+  let _stepKey    = null;
+  let _catSlug    = null;
+  let _subcatSlug = null;
+  let _touchX     = 0;
 
   const overlay   = () => document.getElementById('slideshow-overlay');
 
   /* ── Open ──────────────────────────────────────────────────── */
-  function open(stepKey, catSlug, startIndex) {
-    _stepKey = stepKey;
-    _catSlug = catSlug;
-    _cards   = Store.getCards(stepKey, catSlug);
-    if (_cards.length === 0) { UI.toast('No cards in this category', 'info'); return; }
-    _index   = Math.min(startIndex || 0, _cards.length - 1);
+  function open(stepKey, catSlug, startIndex, subcatSlug) {
+    _stepKey    = stepKey;
+    _catSlug    = catSlug;
+    _subcatSlug = subcatSlug || null;
+    _cards      = Store.getCards(stepKey, catSlug, _subcatSlug);
+    if (_cards.length === 0) { UI.toast('No cards to review', 'info'); return; }
+    _index = Math.min(startIndex || 0, _cards.length - 1);
 
     const cats = Store.getCategories(stepKey);
     const cat  = cats.find(c => c.slug === catSlug);
-    document.getElementById('slideshow-category-label').textContent =
-      cat ? `${cat.icon} ${cat.label}` : catSlug;
+    let label  = cat ? `${cat.icon} ${cat.label}` : catSlug;
+    if (_subcatSlug) {
+      const subs = Store.getSubcategories(stepKey, catSlug);
+      const sub  = subs.find(s => s.slug === _subcatSlug);
+      if (sub) label += ` › ${sub.label}`;
+    }
+    document.getElementById('slideshow-category-label').textContent = label;
 
     _render();
     overlay().classList.remove('hidden');
@@ -90,13 +97,13 @@ window.Slideshow = (() => {
 
     document.getElementById('btn-slideshow').addEventListener('click', () => {
       const s = Store.getSettings();
-      open(s.activeStep, s.activeCategory, 0);
+      open(s.activeStep, s.activeCategory, 0, s.activeSubcategory);
     });
 
     document.getElementById('slideshow-flag-btn').addEventListener('click', () => {
       if (!_cards.length) return;
       const card = _cards[_index];
-      const flagged = Store.toggleFlag(_stepKey, _catSlug, card.id);
+      const flagged = Store.toggleFlag(_stepKey, _catSlug, card.id, _subcatSlug);
       card.flagged = flagged;  // sync local array
       _render();
       Render.cardList();
@@ -106,9 +113,9 @@ window.Slideshow = (() => {
       if (!_cards.length) return;
       const card = _cards[_index];
       close();
-      // Make sure we're on the right step/category
       Store.setSetting('activeStep', _stepKey);
       Store.setSetting('activeCategory', _catSlug);
+      Store.setSetting('activeSubcategory', _subcatSlug || null);
       Render.stepTabs();
       Render.sidebar();
       Render.cardList();

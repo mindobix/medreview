@@ -247,156 +247,258 @@ window.DEFAULT_DATA = {
     step2: {
       label: 'Step 2 CK',
       categories: {
-        internal_med: {
-          label: 'Internal Medicine', icon: '🏥',
-          cards: {
-            'im1': { id:'im1', title:'Chest Pain Differential', flagged:false, created:'2026-01-01', modified:'2026-01-01',
-              content:`<ul>
-<li><b>STEMI</b>: ST elevation + reciprocal depression; <mark>cath lab within 90 min (door-to-balloon)</mark>; if no cath lab → fibrinolytics within 30 min if no contraindications</li>
-<li><b>NSTEMI/UA</b>: troponin ↑ (NSTEMI) or normal (UA); no ST elevation; MONA (morphine, O2, nitroglycerin, aspirin) + heparin; cardiac cath within 24-72h</li>
-<li><b>Aortic dissection</b>: tearing/ripping pain radiating to back; BP differential (&gt;20 mmHg between arms); widened mediastinum on CXR; CT angiography; NO anticoagulation; Type A → surgery; Type B → β-blockers + BP control</li>
-<li><b>PE</b>: pleuritic pain, dyspnea, tachycardia; Wells score; CT-PA (gold standard) or V/Q scan; treat: anticoagulation (LMWH → warfarin/DOAC); massive PE → tPA thrombolytics</li>
-<li><b>Pericarditis</b>: sharp, positional (↑ supine, ↓ leaning forward); friction rub; diffuse saddle-shaped ST elevation + PR depression; treat: NSAIDs + colchicine</li>
-<li><b>Esophageal spasm</b>: mimics angina; relieved by nitrates; "corkscrew esophagus" on barium swallow</li>
-</ul>` },
-            'im2': { id:'im2', title:'Hypertensive Emergency Management', flagged:false, created:'2026-01-01', modified:'2026-01-01',
-              content:`<ul>
-<li><b>Urgency</b>: BP &gt;180/120, <u>no</u> end-organ damage; oral medications; reduce over 24–48h (labetalol PO, clonidine, amlodipine)</li>
-<li><b>Emergency</b>: BP &gt;180/120 + end-organ damage → <mark>reduce MAP by 20–25% in first hour, then gradually</mark></li>
-<li><b>End-organ damage</b>: hypertensive encephalopathy, retinopathy (papilledema), AKI, flash pulmonary edema, aortic dissection, eclampsia, MI</li>
-<li><b>IV Agents</b>: nicardipine (most versatile), labetalol, clevidipine, hydralazine (pregnancy)</li>
-<li><b>Nitroprusside</b>: most potent; cyanide toxicity risk; avoid in renal failure; requires ICU monitoring</li>
-<li><b>Eclampsia</b>: labetalol or hydralazine for BP; MgSO4 for seizure prevention; delivery is definitive</li>
-<li><b>Avoid rapid correction</b> – risk of ischemic stroke, watershed infarcts</li>
-</ul>` }
-          }
+        human_development: {
+          label: 'Human Development', icon: '👶',
+          subcategories: {
+            normal_findings: { label: 'Normal age-related findings and care of the well patient', summary: 'Infancy and childhood (0 12 years Normal physical changes: linear growth, variations in linear growth, including constitutional delay; weight; head circumference; micturition, defecation, primary incontinence/bedwetting; normal physical examination; screening; sleep; teething syndrome Developmental stages: motor; speech; cognitive; psychosocial; anticipatory guidance Lifestyle and routine preventive health care: nutrition; exercise (eg, benefits of exercise preventive/travel medicine; risk factors and prevention (eg, guns, swimming, motor vehicles, car seats; routine vaccinations; adaptive be', cards: {} }
+          },
+          cards: {}
         },
-        cardiology_ck: {
-          label: 'Cardiology', icon: '🫀',
-          cards: {
-            'ck1': { id:'ck1', title:'Heart Failure Management', flagged:false, created:'2026-01-01', modified:'2026-01-01',
-              content:`<p><b>HFrEF (EF &lt;40%) – disease-modifying therapy (GDMT):</b></p>
-<ul>
-<li><b>ACEi/ARB/ARNi</b> (sacubitril-valsartan [Entresto]) – reduces mortality; ARNi preferred if tolerated</li>
-<li><b>β-blocker</b> (carvedilol, metoprolol succinate, bisoprolol) – reduce mortality; start when euvolemic</li>
-<li><b>MRA</b> (spironolactone, eplerenone) – reduces mortality in EF &lt;35%; monitor K+</li>
-<li><b>SGLT2 inhibitors</b> (dapagliflozin, empagliflozin) – newest GDMT; ↓ hospitalization &amp; mortality</li>
-<li><b>Diuretics</b> (furosemide) – symptom relief only; not disease-modifying</li>
-<li><b>ICD</b>: EF &lt;35% despite 3+ months GDMT → sudden death prevention</li>
-<li><b>CRT</b>: EF &lt;35% + LBBB + QRS &gt;150ms</li>
-</ul>
-<p><b>HFpEF (EF ≥50%)</b>: diuretics for symptoms; SGLT2i beneficial; control underlying HTN/AF</p>` }
-          }
+        immune_system: {
+          label: 'Immune System', icon: '🛡️',
+          subcategories: {
+            immunodeficiency:    { label: 'Disorders associated with immunodeficiency', summary: 'deficiency primarily of humoral immunity common variable immunodeficiency; hyper IgM syndrome; hypogammaglobulinemia/agammaglobulinemia, X linked (Bruton; selective immunodeficiency (eg, IgA, IgM, IgE deficiency/dysfunction primarily of cell mediated immunity adenosine deaminase deficiency; DiGeorge (22q11.2 deletionyndrome ; severe combined immunodeficiency disease (SCIDskott Aldrich syndrome; granulomatosis; allergic reactions/skin complement deficiency alternative pathway component deficiency (C2, C3b, C3bB, C36B6ssical pathway component deficiency (C1q, C1r, C1 C5; terminal component', cards: {} },
+            hiv_aids:            { label: 'HIV/AIDS', summary: 'HIV1 and HIV2; AIDS; AIDS complications (eg, neuropathy, dementia, renal insufficiencymmunology of AIDS; immune reconstitution syndrome (IRSsecondary infections; noninfectious complications (eg, Kaposi sarcoma', cards: {} },
+            immunologic:         { label: 'Immunologically mediated disorders', summary: 'hypersensitivity reactions type 1, 2, 3, including anaphylaxis; type 4; drug reactions; serum sickness transplantation rejection; graft host disease', cards: {} },
+            drug_effects:        { label: 'Adverse effects of drugs on the immune system', summary: 'Jarisch Herxheimer reaction drugs affecting the immune system (eg, prednisone, azathioprine, cyclosporine, methotrexate, monoclonal antibody drugs [eg, abciximab, adalimumab; bevacizumab, vaccine adverse effects', cards: {} }
+          },
+          cards: {}
         },
-        ob_gyn: {
-          label: 'OB/GYN', icon: '🤰',
-          cards: {
-            'og1': { id:'og1', title:'Preeclampsia & Eclampsia', flagged:false, created:'2026-01-01', modified:'2026-01-01',
-              content:`<ul>
-<li><b>Preeclampsia</b>: HTN (≥140/90 on 2 occasions) + proteinuria (&gt;300mg/24h) OR end-organ damage after 20 wks gestation</li>
-<li><b>Severe features</b>: BP ≥160/110, thrombocytopenia &lt;100k, Cr &gt;1.1, LFTs &gt;2× normal, pulmonary edema, new headache/visual changes</li>
-<li><b>HELLP</b>: Hemolysis, Elevated Liver enzymes, Low Platelets; variant of severe preeclampsia</li>
-<li><b>Management</b>: <mark>delivery is definitive treatment</mark>; MgSO4 for seizure prophylaxis; labetalol/hydralazine/nifedipine for BP ≥160/110</li>
-<li><b>Eclampsia</b>: new-onset seizures in preeclampsia; MgSO4 (not phenytoin); Ca gluconate reverses Mg toxicity</li>
-<li><b>Mg toxicity signs</b>: loss of DTRs (first sign) → respiratory depression → cardiac arrest; therapeutic level 4–7 mEq/L</li>
-<li><b>Postpartum</b>: can develop up to 6 weeks after delivery; monitor BP closely</li>
-</ul>` },
-            'og2': { id:'og2', title:'Abnormal Uterine Bleeding', flagged:false, created:'2026-01-01', modified:'2026-01-01',
-              content:`<p><b>PALM-COEIN classification:</b></p>
-<ul>
-<li><b>PALM</b> (structural): Polyp, Adenomyosis, Leiomyoma (fibroids), Malignancy</li>
-<li><b>COEIN</b> (non-structural): Coagulopathy, Ovulatory dysfunction, Endometrial, Iatrogenic, Not yet classified</li>
-</ul>
-<p><b>Key workup</b>: β-hCG first (always!), CBC, TSH, prolactin, coagulation studies; pelvic US; endometrial biopsy if &gt;45yo or risk factors</p>
-<ul>
-<li><b>Fibroids</b>: most common pelvic tumor; heavy menstrual bleeding; GnRH agonist (temporary); myomectomy (fertility desired) or hysterectomy</li>
-<li><b>Endometrial cancer</b>: <mark>postmenopausal bleeding = malignancy until proven otherwise</mark>; risk: unopposed estrogen, obesity, nulliparity, tamoxifen, PCOS</li>
-<li><b>PCOS</b>: oligo/anovulation, hyperandrogenism, polycystic ovaries; ↑ LH:FSH ratio; treat: OCP (cycle control), metformin (insulin resistance), clomiphene (fertility)</li>
-</ul>` }
-          }
+        blood_lymphoreticular: {
+          label: 'Blood & Lymphoreticular System', icon: '🩸',
+          subcategories: {
+            infectious:    { label: 'Infectious and immunologic, including microbiologic and host response to insult', summary: 'infectious disorders bacterial viral: hemorrhagic fever (Ebola virus, Marburg virus chikungunya; dengue fever; Zika virus disease parasitic: malaria ( Plasmodium ecies siosis ( Babesia species primary infections of lymphoid tissue lymphadenitis (viral, bacterial, fungal, parasiticymphangitis; buboes, bubonic plague ( Yersinia pestis scratch disease ( Bartonella henselae immunologic and inflammatory disorders cryoglob inemia, essential mixed cryoglob inemia; autoimmune hemolytic anemia; paroxysmal nocturnal hemoglobinuria; thrombotic thrombocytopenic purpura; hemolytic uremic syndrome', cards: {} },
+            neoplasms:     { label: 'Neoplasms', summary: 'leukemia, acute (ALL, AMLleukemia, chronic (CLL, CMLmphomas, Hodgkin disease, non Hodgkin lymphoma, Burkitt lymphoma, T cell lymphoma; multiple myeloma, dysproteinemias, monoclonal gammopathy of unknown significance (MGUSyelofibrosis; myelodysp lastic syndrome, myelodysplasias; other immunoproliferative neoplasms (eg, Waldenstrom macroglobulinemia', cards: {} },
+            anemia:        { label: 'Anemia, cytopenias, and polycythemia', summary: 'decreased production anemia of chronic disease hemolysis glucose phosphate dehydrogenase deficiency; pyruvate kinase deficiency disorders of hemoglobin, heme, or membrane disorders of red cell membranes; hereditary spherocytosis, elliptocytosis; methemoglobinemia, congenital; sickle cell disease; sideroblastic anemia; thalassemias other causes of anemia blood loss, acute and chronic as a cause of anemia cytopenias aplastic anemia; leukopenia; neutropenia, cyclic neutropenia, agranulocytosis; pancytopenia; thrombocytopenia, quantitative; immune thrombocytopenic purpura (ITP cythemias eukocytosi', cards: {} },
+            coagulation:   { label: 'Coagulation disorders (hypocoagulable and hypercoagulable conditions)', summary: 'ypocoagulable disseminated intravascular coagulation; hemophilia, congenital actor hypercoagulable heparin induced thrombocytopenia; other coagulopathies (eg, homocysteinemia, hypoplasminogenemia, antithrombin III, protein C/protein S deficiency, Factor V Leiden, anticardiolipin antibodies, lupus anticoagulant, prothrombin G20210A mutation reactions to blood components ABO incompatibility/anaphylaxis; Rh incompatibility/anaphylaxis; hemolysis, delayed; transfusion reaction; transfusion contaminated with bacteria; transfusion related acute lung injury (TRALI; anaphylactoid reaction (IgA defici', cards: {} },
+            traumatic:     { label: 'Traumatic, mechanical, and vascular disorders', summary: 'mechanical injury to erythrocytes (eg, cardiac valve hemolysis disorders of the spleen splenic rupture/laceration; splenic infarct; splenic abscess; effects/complications of splenectomy (eg, sepsis due to encapsulated bacteria; hypersplenism', cards: {} },
+            drug_effects:  { label: 'Adverse effects of drugs on the hematologic and lymphoreticular systems', summary: 'antiplatelet drugs antithrombin drugs (eg, dabigatran chemotherapeutic agents inhibitors of coagulation factors methemoglobinemia, acquired propylthiouracil tumor lysis syndrome warfarin', cards: {} }
+          },
+          cards: {}
         },
-        pediatrics: {
-          label: 'Pediatrics', icon: '👶',
-          cards: {
-            'ped1': { id:'ped1', title:'Developmental Milestones', flagged:false, created:'2026-01-01', modified:'2026-01-01',
-              content:`<ul>
-<li><b>2 months</b>: social smile, coos, tracks past midline</li>
-<li><b>4 months</b>: laughs, holds head steady, rolls front→back, hands together at midline</li>
-<li><b>6 months</b>: sits with support, stranger anxiety, transfers objects, rolls both ways, babbles (consonants)</li>
-<li><b>9 months</b>: object permanence, pincer grasp begins, stands holding furniture, waves bye-bye</li>
-<li><b>12 months</b>: mama/dada specific, 1–2 words, walks with support, pincer grasp refined</li>
-<li><b>18 months</b>: 20 words, walks alone, scribbles, stacks 2–4 blocks, points to body parts</li>
-<li><b>2 years</b>: 50+ words, 2-word phrases, runs, kicks ball, parallel play</li>
-<li><b>3 years</b>: 3-word sentences, rides tricycle, copies circle, dress/undress, cooperative play</li>
-<li><b>4 years</b>: counts 4+ objects, knows colors, draws person (3 parts), hops on one foot</li>
-</ul>
-<p><mark>Loss of milestones at any age = red flag → evaluate for regression</mark></p>` },
-            'ped2': { id:'ped2', title:'Pediatric Vaccines Schedule (ACIP)', flagged:false, created:'2026-01-01', modified:'2026-01-01',
-              content:`<ul>
-<li><b>Birth</b>: Hep B #1</li>
-<li><b>2 months</b>: DTaP, IPV, Hib, PCV13, Rotavirus, Hep B #2</li>
-<li><b>4 months</b>: DTaP, IPV, Hib, PCV13, Rotavirus</li>
-<li><b>6 months</b>: DTaP, Hib, PCV13, Rotavirus, Flu (annual), Hep B #3</li>
-<li><b>12–15 months</b>: MMR, Varicella, Hep A #1, PCV13, Hib</li>
-<li><b>15–18 months</b>: DTaP #4</li>
-<li><b>4–6 years</b>: DTaP #5, IPV #4, MMR #2, Varicella #2</li>
-<li><b>11–12 years</b>: Tdap, MCV4, HPV series (2 doses if started before 15)</li>
-</ul>
-<p><b>Contraindications</b>: live vaccines (MMR, Varicella) contraindicated in immunocompromised and pregnancy</p>` }
-          }
+        behavioral_health: {
+          label: 'Behavioral Health', icon: '🧠',
+          subcategories: {
+            psychotic:      { label: 'Psychotic disorders', summary: 'brief psychotic disorder; delusional disorder; psychotic disorder due to another medical condition; schizophrenia; schizoaffective disorder; substance induced psychotic disorder', cards: {} },
+            anxiety:        { label: 'Anxiety disorders', summary: 'acute stress disorder; anxiety disorders (generalized anxiety disorder, anxiety due to another medical condition, social phobiayperventilation syndrome; obsessive compulsive disorder; panic disorder with and without agoraphobia; phobic disorders; post traumatic stress disorder; selective mutism; separation anxiety disorder; substance induced anxiety disorder, trichotillomania', cards: {} },
+            mood:           { label: 'Mood disorders', summary: 'major depressive disorder with and without psychotic features, with and without seasonal pattern; major depressive disorder, postpartum, with and without psychotic features, including screening; cyclothymic disorder; persistent depressive disorder; bipolar disorder, manic/depressed/mixed; premenstrual dysphoric disorder; bipolar and related disorder or depressive disorder due to another medical condition; substance/medication induced bipolar and related disorder or depressive disorder (illegal or prescribed suicidal ideation/attempt', cards: {} },
+            somatic:        { label: 'Somatic symptoms and related disorders', summary: 'body dysmorphic disorder; functional neurologic symptom disorder conversion disorder , including psychogenic seizures; dissociative disorders; illness anxiety disorder (hypochondriasismalingering; pain disorder; somatic symptom disorder', cards: {} },
+            factitious:     { label: 'Factitious disorders', summary: 'factitious disorder imposed on self', cards: {} },
+            eating_impulse: { label: 'Eating disorders and impulse control disorders', summary: 'anorexia nervosa; binge eating disorder; bulimia nervosa; eating disorder; disruptive, impulse control, and conduct disorders (eg, gambling, kleptomania, pyromania', cards: {} },
+            infancy:        { label: 'Disorders originating in infancy/childhood', summary: 'reactive attachment disorder; attention deficit/hyperactivity disorder; speech sound disorder or language disorder; learning disorder/dyslexia; intellectual developmental disorder and developmental delay, undefined, including school problems, fetal alcohol syndrome; oppositional defiant disorder, conduct disorder; autism spectrum disorder, Rett syndrome; psychoses with origin specific to childhood; elimination disorders (incontinence, encopresis; tic disorders/Tourette disorder', cards: {} },
+            personality:    { label: 'Personality disorders', summary: 'antisocial personality disorder; avoidant personality disorder; borderline personality disorder; dependent personality disorder; histrionic personality disorder; narcissistic personality disorder; obsessive compulsive personality disorder; paranoid personality disorder; schizoid personality disorder', cards: {} },
+            psychosocial:   { label: 'Psychosocial disorders/behaviors', summary: 'adjustment disorder; grief response/bereavement, normal and persistent complex; parent child relational problems other than physical or emotional abuse; other psychosocial stress; psychodynamic and behavioral factors, related past experience (eg, transfere nce, personality traits', cards: {} },
+            sexual:         { label: 'Sexual disorders and gender dysphoria', summary: 'gender dysphoria; psychosexual dysfunction', cards: {} },
+            substance_use:  { label: 'Substance use disorders', summary: 'alcohol use disorder/intoxication/dependence/withdrawal; tobacco/nicotine use disorder/dependence/withdrawal; varenicline use; cannabis use disorder/intoxication/dependence; hallucinogen use disorder/intoxication/dependence/withdrawal; inhalant use disorde r/intoxication/dependence/withdrawal; opioid, heroin, including prescription drug, use disorder/intoxication/dependence/withdrawal; sedative, hypnotic, including benzodiazepine and barbiturate use disorder/intoxication/dependence/withdrawal; stimulant, coc aine, methamphetamine use disorder/intoxication/dependence/withdrawal; other drugs of', cards: {} }
+          },
+          cards: {}
         },
-        psychiatry: {
-          label: 'Psychiatry', icon: '🧠',
-          cards: {
-            'psych1': { id:'psych1', title:'Antidepressants Comparison', flagged:false, created:'2026-01-01', modified:'2026-01-01',
-              content:`<ul>
-<li><b>SSRIs</b>: first-line; sexual dysfunction, GI upset, SIADH, serotonin syndrome (with MAOIs); fluoxetine (longest t½, fewest discontinuation sx); paroxetine (most anticholinergic)</li>
-<li><b>SNRIs</b>: venlafaxine, duloxetine; depression + neuropathic pain/fibromyalgia; ↑ BP at high doses</li>
-<li><b>Bupropion</b>: no sexual dysfunction; smoking cessation (Zyban); <mark>lowers seizure threshold</mark>; contraindicated in eating disorders, seizures; does NOT cause serotonin syndrome</li>
-<li><b>Mirtazapine</b>: NaSSA; ↑ appetite, sedation (antihistamine); good for anorexia/insomnia; no sexual dysfunction</li>
-<li><b>TCAs</b> (amitriptyline, nortriptyline): neuropathic pain, enuresis (imipramine); AEs: 3 Cs (Convulsions, Coma, Cardiotoxicity) + anticholinergic; treat OD with sodium bicarbonate (widens QRS)</li>
-<li><b>MAOIs</b> (phenelzine, tranylcypromine): atypical depression; <mark>tyramine reaction = hypertensive crisis</mark>; serotonin syndrome with SSRIs; 2-week washout</li>
-<li><b>Trazodone</b>: priapism, sedation; often used as sleep aid; no sexual dysfunction</li>
-</ul>` },
-            'psych2': { id:'psych2', title:'Antipsychotics', flagged:false, created:'2026-01-01', modified:'2026-01-01',
-              content:`<ul>
-<li><b>Typical (1st gen)</b>: D2 antagonists; haloperidol (most EPS), chlorpromazine (most sedation/anticholinergic); EPS (akathisia, dystonia, parkinsonism, tardive dyskinesia)</li>
-<li><b>EPS timeline</b>: <mark>4 hours → akathisia; 4 days → acute dystonia; 4 weeks → drug-induced parkinsonism; 4 months → tardive dyskinesia</mark></li>
-<li><b>Tardive dyskinesia</b>: lip smacking, choreoathetoid movements; treat: valbenazine (VMAT2 inhibitor) or clonazepam</li>
-<li><b>NMS</b>: fever, rigidity, altered mental status, autonomic instability; ↑ CK; treat: stop antipsychotic, dantrolene, bromocriptine</li>
-<li><b>Atypical (2nd gen)</b>: D2 + 5-HT2A; clozapine (best for refractory; agranulocytosis → weekly CBC), olanzapine, quetiapine, risperidone, aripiprazole</li>
-<li><b>Metabolic syndrome</b>: weight gain, dyslipidemia, DM2 → olanzapine &gt; clozapine &gt; others; aripiprazole has lowest metabolic risk</li>
-</ul>` }
-          }
+        nervous_system: {
+          label: 'Nervous System & Special Senses', icon: '⚡',
+          subcategories: {
+            infectious:       { label: 'Infectious, immunologic, and inflammatory disorders, including microbiologic and host response to insult', summary: 'infectious disorders meningitis: bacterial ( Actinomyces israelii Haemophilus influenzae Listeria monocytogenes Mycobacterium tuberculosis Neisseria meningitidis Staphylococcus aureus epidermidis Streptococcus agalactiae Streptococcus pneumoniae al (adenovirus, arboviruses, echovirus and coxsackie virus A & B, polioviruses, herpes simplex virus, varicella zoster, human immunodeficiency virus, lymphocytic choriomeningitis virus, measles virus, mumps virus, St. Louis encephalitis virus, California encephalitis virus, W estern equine encephalitis virusungal Blastomycosis dermatitidis Cryptococc', cards: {} },
+            neoplasms:        { label: 'Neoplasms (cerebral, spinal, and peripheral)', summary: 'benign (meningioma, neurofibromatosis malignant (glioblastoma, astrocytoma, medulloblastoma, primary CNS lymphoma metastatic (eg, breast, lung, pancreatic, testicular, melanoma', cards: {} },
+            cerebrovascular:  { label: 'Cerebrovascular disease', summary: 'arteriovenous malformations, ectatic cerebral vessels; transient ischemic attack; stroke, thrombotic: cerebral artery occlusion/cerebral infarction; stroke, embolic: cerebral embolism; stroke: intracerebral hemorrhage, including subarachnoid hemorrhage, traumatic intracranial hemorrhage; cerebral artery aneurysm; carotid artery stenosis/atherosclerosis/occlusion/dissection; vertebral artery deficiency/ dissection; subclavian steal syndrome; vascular dementia; hypertensive encephalopathy; posterior reversible encephalopathy syndrome; venous sinus thrombosis', cards: {} },
+            spine:            { label: 'Disorders relating to the spine, spinal cord, and spinal nerve roots', summary: 'cauda equina syndrome; spinal artery thrombosis/embolus/infarct; spinal cord compression; spinal cord transection, paraplegia and quadriplegia, acute and chronic effects (eg, autonomic dysreflexia spinal stenosis (cervical, lumbar syringomyelia', cards: {} },
+            cranial_periph:   { label: 'Cranial and peripheral nerve disorders', summary: 'cranial nerve injury/disorders cranial nerve injury; Bell palsy; anisocoria, miosis, mydriasis; internuclear ophthalmoplegia; nystagmus and other irregular eye movements; vestibular neuritis, labyrinthitis; ptosis of the eyelid; Horner syndrome peripheral nerve/plexus injury/disorders peripheral nerve injury, including brachial plexus; carpal/cubital/tarsal/peroneal tunnel syndrome; mononeuritis, Guillain Barr syndrome; Miller Fisher syndrome; neuropathy (eg, Charcot Marie Tooth diseaseherpes zoster', cards: {} },
+            pain_syndromes:   { label: 'Neurologic pain syndromes', summary: 'complex regional pain syndrome (reflex sympathetic dystrophy, causalgia; fibromyalgia; postherpetic neuralgia; phantom limb pain/syndrome; thalamic pain syndrome; trigeminal neuralgia', cards: {} },
+            degenerative:     { label: 'Degenerative disorders/amnestic syndromes', summary: 'Alzheimer disease; frontotemporal dementia, including progressive supranuclear palsy, Lewy body disease; mild neurocognitive disorder, mild cognitive impairment', cards: {} },
+            global_cerebral:  { label: 'Global cerebral dysfunction', summary: 'altered states of consciousness; delirium; coma/brain death', cards: {} },
+            neuromuscular:    { label: 'Neuromuscular disorders', summary: 'amyotrophic lateral sclerosis/spinal muscular atrophy; muscular dystrophy (eg, Duchenne, myotonic; muscle channelopathies (eg, hypokalemic period paralysis', cards: {} },
+            movement:         { label: 'Movement disorders', summary: 'acute dystonia; adult tic disease; essential tremor; Huntington disease; Parkinson disease, including Parkinson dementia', cards: {} },
+            metabolic:        { label: 'Metabolic disorders', summary: 'adrenoleukodystrophy; metabolic encephalopathy', cards: {} },
+            paroxysmal:       { label: 'Paroxysmal disorders', summary: 'headache, including migraine, mixed, tension, ice pick, cluster, medication withdrawal, caffeine withdrawal; seizure disorders, including generalized tonic clonic, partial, absence, febrile', cards: {} },
+            sleep:            { label: 'Sleep disorders', summary: 'cataplexy and narcolepsy; circadian rhythm sleep wake disorder; insomnia, primary; sleep terror disorder and sleepwalking; REM sleep behavior disorder; restless legs syndrome', cards: {} },
+            traumatic:        { label: 'Traumatic and mechanical disorders and disorders of increased intracranial pressure', summary: 'mechanical injury to erythrocytes (eg, cardiac valve hemolysis disorders of the spleen splenic rupture/laceration; splenic infarct; splenic abscess; effects/complications of splenectomy (eg, sepsis due to encapsulated bacteria; hypersplenism', cards: {} },
+            congenital:       { label: 'Congenital disorders', summary: 'Friedreich ataxia; neural tube defects (eg, spina bifida, holoprosencephaly, anencephaly; microcephaly; Sturge Weber syndrome; tuberous sclerosis, von Hippel Lindau disease; hydrocephalus, obstructive (Arnold Chiari', cards: {} },
+            drug_effects:     { label: 'Adverse effects of drugs on the nervous system', summary: 'acute dystonic reaction induced meningitis (eg, NSAIDs, sulfa drugs induced neuropathy (eg, vincristine, isoniazid, metronidazole extrapyramidal adverse effects (eg, akathisia, dystonia, drug induced parkinsonism neuroleptic malignant syndrome poisoning by psychotropic agents, including antidepressants serotonin syndrome tardive dyskinesia', cards: {} },
+            eye_eyelid:       { label: 'Disorders of the eye and eyelid', summary: 'infectious and inflammatory disorders of the eye, including microbiologic and host response to insult blepharitis/eyelid inflammation; chalazion; chorioretinitis; conjunctivitis (adenovirusratoconjunctivitis; dacryocystitis; endophthalmitis; hordeolum; iridocyclitis; optic neuritis; periorbital cellulitis; uveitis neoplasms of the eye melanoma; retinoblastoma disorders of the eye and eyelid, structural cataract; glaucoma; lacrimal system disorders; pterygium; refractive disorders (presbyopia, myopia, hyperopia, astigmatism disorders of the pupil, iris, muscles (extraocular amblyopia; strabism', cards: {} },
+            ear:              { label: 'Disorders of the ear', summary: 'infectious and inflammatory disorders of the ear, including microbiologic and host response to insult chondritis; mastoiditis; otitis, externa, media, interna, serous, suppurative, malignant otitis externa neoplasms acoustic neuroma, neurofibromatosis type 2; cholesteatoma hearing loss/deafness hearing loss, including noise induced; otosclerosis; tinnitus disorders of balance and spatial orientation Mnire disease; motion sickness; vertigo, including benign positional vertigo traumatic and mechanical disorders barotrauma; foreign body in ear; impacted cerumen; laceration, avulsion; perforation', cards: {} }
+          },
+          cards: {}
         },
-        surgery: {
-          label: 'Surgery', icon: '🔪',
-          cards: {
-            'su1': { id:'su1', title:'Acute Abdomen Localization', flagged:false, created:'2026-01-01', modified:'2026-01-01',
-              content:`<ul>
-<li><b>RUQ</b>: cholecystitis (Murphy's sign – inspiratory arrest with RUQ palpation), choledocholithiasis, hepatitis, Fitz-Hugh-Curtis (perihepatitis, gonorrhea/chlamydia)</li>
-<li><b>RLQ</b>: <mark>appendicitis</mark> (McBurney's point, Rovsing's, psoas, obturator signs); ovarian pathology, Meckel's diverticulum, Crohn's ileitis</li>
-<li><b>LLQ</b>: diverticulitis ("left-sided appendicitis"); ovarian cyst/torsion, sigmoid volvulus, IBD</li>
-<li><b>Epigastric</b>: PUD, gastritis, pancreatitis (epigastric radiating to back, ↑ with food, ↓ leaning forward)</li>
-<li><b>Diffuse</b>: peritonitis (rigid abdomen, rebound, guarding), mesenteric ischemia, DKA (pseudo-acute abdomen)</li>
-<li><b>Appendicitis workup</b>: Alvarado score; US first (in pregnant); CT if US equivocal; WBC ↑, CRP ↑; surgery (laparoscopic appendectomy)</li>
-</ul>` }
-          }
+        skin_subcutaneous: {
+          label: 'Skin & Subcutaneous Tissue', icon: '🩹',
+          subcategories: {
+            infectious:     { label: 'Infectious, immunologic, and inflammatory disorders, including microbiologic and host response to insult', summary: 'infectious disorders and infestations bacterial cellulitis, erysipelas, impetigo, staphylococcal scalded skin syndrome; abscess, cutaneous, including septic abscess; anthrax ( Bacillus anthracis arbuncle; folliculitis; pilonidal cyst, infected; MSSA and MRSA skin infections; mycobacterial infections (eg, leprosy, draining sinusscarlet fever (group A Streptococcus viral herpes simplex type 1 & type 2, herpes zoster, Ramsay Hunt syndrome; molluscum contagiosum; hand mouth disease; herpangina; parvovirus; chickenpox, erythema infectiosum (fifth diseaserubella, measles, roseola (exanthema subit', cards: {} },
+            neoplasms:      { label: 'Neoplasms', summary: 'benign (meningioma, neurofibromatosis malignant (glioblastoma, astrocytoma, medulloblastoma, primary CNS lymphoma metastatic (eg, breast, lung, pancreatic, testicular, melanoma', cards: {} },
+            integumentary:  { label: 'Integumentary disorders (hair and hair follicles, nails, sweat glands, sebaceous glands, oral mucous membranes)', summary: 'disorders of the hair and hair follicles alopecia; seborrhea capitis/seborrheic dermatitis; tinea barbae and capitis disorders of the nails (including ingrowing nail disorders of sweat and sebaceous glands acne vulgaris; hidradenitis suppurativa; hyperhidrosis; ichthyosis; rosacea', cards: {} },
+            oral_disease:   { label: 'Oral disease', summary: 'aphthous ulcers (stomatitis, canker sores; leukoplakia', cards: {} },
+            pigmentation:   { label: 'Disorders of pigmentation', summary: 'albinism; lentigo', cards: {} },
+            traumatic:      { label: 'Traumatic and mechanical disorders', summary: 'anoxic brain damage, cerebral hypoxia; epidural, subdural hematoma (cerebral and spinal intraparenchymal hemorrhage, traumatic subarachnoid hemorrhage; cerebral edema; idiopathic intracranial hypertension; torticollis/cervical dystonia; hydrocephalus, in cluding normal pressure; traumatic brain injury (concussion/postconcussion syndrome (dementia pugilisticaraumatic brain syndrome', cards: {} },
+            congenital:     { label: 'Congenital disorders', summary: 'xeroderma pigmentosum; benign lesions in neonates, infants, children (eg, congenital nevi', cards: {} },
+            drug_effects:   { label: 'Adverse effects of drugs on skin and subcutaneous tissue', summary: 'drug reactions, eruptions, including local reaction to vaccine', cards: {} }
+          },
+          cards: {}
         },
-        emergency: {
-          label: 'Emergency Medicine', icon: '🚨',
-          cards: {
-            'er1': { id:'er1', title:'Status Epilepticus Management', flagged:false, created:'2026-01-01', modified:'2026-01-01',
-              content:`<p><b>Definition</b>: seizure &gt;5 min OR ≥2 seizures without return to baseline</p>
-<ul>
-<li><b>1st line</b>: IV <mark>lorazepam</mark> (0.1 mg/kg); IM midazolam if no IV access; rectal/nasal options available</li>
-<li><b>2nd line (5–20 min)</b>: IV levetiracetam, IV valproate, or IV fosphenytoin</li>
-<li><b>3rd line / Refractory (20–40 min)</b>: IV phenobarbital; consider intubation</li>
-<li><b>Super-refractory (&gt;24h)</b>: anesthesia (propofol, midazolam drip, ketamine, pentobarbital coma); continuous EEG monitoring</li>
-<li><b>Always check</b>: fingerstick glucose (give dextrose + thiamine if alcoholism suspected), electrolytes (Na, Ca, Mg), toxicology, AED levels</li>
-<li><b>Common causes</b>: AED non-compliance, alcohol withdrawal, CNS infection, electrolyte abnormalities, stroke, drug toxicity</li>
-</ul>` }
-          }
+        musculoskeletal: {
+          label: 'Musculoskeletal System', icon: '🦴',
+          subcategories: {
+            infectious:   { label: 'Infectious, inflammatory, and immunologic disorders, including microbiologic and host response to insult', summary: 'infectious disorders gangrene, dry and wet, clostridial myonecrosis ( Clostridium perfringens citis; myositis, infective; necrotizing fasciitis; osteomyelitis; septic arthritis; spondylitis, tuberculous immunologic disorders ankylosing spondylitis; dermatomyositis/polymyositis; juvenile idiopathic arthritis; rheumatoid arthritis, Felty syndrome; psoriatic arthropathy inflammatory disorders adhesive capsulitis of shoulder (frozen shoulder syndrome; ankylosis/spondylopathy (inflammatory bursitis; fasciitis; ganglion cyst osteochondritis, osteochondritis dissecans; tendinitis, supraspinatus sy', cards: {} },
+            neoplasms:    { label: 'Neoplasms', summary: 'benign neoplasms, cysts and other skin lesions actinic keratoses; cysts, including epidermal; hemangiomas; lipoma; pigmented nevi; seborrheic keratosis; xanthomas malignant neoplasms basal cell carcinoma; squamous cell carcinoma; melanoma, including genital; cutaneous T lymphoma, mycosis fungoides', cards: {} },
+            degenerative: { label: 'Degenerative and metabolic disorders', summary: 'degenerative/metabolic disorders of bone, tendon, and cartilage chondromalacia; disc degeneration, herniated disc; Legg Perthes disease; Osgood Schlatter disease; osteodystrophy; osteomalacia; osteonecrosis (avascularne infarct; osteoporosis; osteopenia; osteitis deformans (Paget disease of bone; pathologic fracture; radiculopathies; spondylolisthesis/spondylosis (degenerative degenerative/metabolic disorders of joints gout, gouty arthritis, pseudogout; joint effusion; osteoarthritis degenerative/metabolic disorders of muscles, ligaments, fascia Dupuytren contracture; muscle calcification an', cards: {} },
+            traumatic:    { label: 'Traumatic and mechanical disorders', summary: 'animal bites (dogs, cats, etc burns or wounds affecting the skin or subcutaneous tissue (eg, sunburn, other including blast injuries and burns cauliflower ear effects of ultraviolet light keloids tattoo thermal injury perniosis frostbite ulcers, decubitus', cards: {} },
+            congenital:   { label: 'Congenital disorders', summary: 'achondroplasia/dwarfism; disorders of limb development (HOX gene mutation, phocomelia developmental dysplasia of the hip; dislocation of hip in infantile spinal muscular atrophy; genu valgum or varum; foot deformities (flat foot, valgus/varus deformities steogenesis imperfecta; McArdle disease; mitochondrial myopathies', cards: {} },
+            drug_effects: { label: 'Adverse effects of drugs on the musculoskeletal system', summary: 'induced myopathy (eg, steroids, statins, cocaine, AZT malignant hyperthermia', cards: {} }
+          },
+          cards: {}
+        },
+        cardiovascular: {
+          label: 'Cardiovascular System', icon: '🫀',
+          subcategories: {
+            infectious:   { label: 'Infectious, immunologic, and inflammatory disorders, including microbiologic and host response to insult', summary: 'infectious disorders bacterial endocarditis, myocarditis immunologic and inflammatory disorders atherosclerosis (eg, atherosclerosis of the aorta', cards: {} },
+            neoplasms:    { label: 'Neoplasms', summary: 'benign neoplasms (eg, osteoid osteoma, enchondroma, tenosynovial giant cell tumor malignant neoplasms of bone (eg, osteosarcoma, sarcoma, leiomyosarcoma, rhabdo sarcoma metastases to bone, secondary malignant neoplasm of bone', cards: {} },
+            dysrhythmias: { label: 'Dysrhythmias', summary: 'premature beats (PACs, PVCsatrial flutter/fibrillation; multifocal atrial tachycardia; paroxysmal tachycardias; ventricular tachycardia/fibrillation; wide complex tachycardia; torsades de pointes; bradycardias; atrioventricular block (first , second degreeconduction disorder (LBBB, RBBB cardiac arrest; sick sinus syndrome; prolonged QT syndrome; Wolff Parkinson White syndrome; carotid sinus hypersensitivity; pacemaker dysfunction, including failure to sense, capture', cards: {} },
+            heart_failure:{ label: 'Heart failure', summary: 'chordae tendineae rupture; congestive heart failure; cor pulmonale; diastolic dysfunction; systolic dysfunction; mitral valve dysfunction; heart failure secondary to myocardial infarction; high output heart failure, including thyrotoxicosis induced, anemia induced; tachycardia induced; cardiogenic pulmonary edema', cards: {} },
+            ischemic:     { label: 'Ischemic heart disease', summary: 'acute coronary syndrome, acute myocardial infarction; angina pectoris, stable and unstable/coronary artery disease/coronary insufficiency; coronary artery spasm', cards: {} },
+            myocardium:   { label: 'Diseases of the myocardium', summary: 'cardiomyopathy, dilated, including alcoholic, viral, takotsubo; cardiomyopathy, obstructive hypertrophic; cardiomyopathy, familial dilated; cardiomyopathy, restrictive; hypertensive heart disease, left ventricular hypertrophy, right ventricular hypertrophy ; complications of myocardial infarction; nontraumatic tamponade post myocardial infarction; papillary muscle rupture/dysfunction; ventricular free wall rupture; myocarditis', cards: {} },
+            pericardium:  { label: 'Diseases of the pericardium', summary: 'chronic constrictive pericarditis; pericardial effusion; pericardial tamponade; acute pericarditis; pericarditis, following myocardial infarction, surgery, trauma', cards: {} },
+            valvular:     { label: 'Valvular heart disease', summary: 'valve disorders, mitral/aortic/tricuspid, pulmonic (eg, regurgitation, stenosis, prolapse, insufficiency, vegetation; functional murmurs; rheumatic heart disease; complications of artificial valves', cards: {} },
+            hypotension:  { label: 'Hypotension', summary: 'orthostatic hypotension', cards: {} },
+            hypertension: { label: 'Hypertension', summary: 'elevated blood pressure reading without diagnosis of hypertension; essential hypertension; hypertensive emergency; secondary hypertension', cards: {} },
+            dyslipidemia: { label: 'Dyslipidemia', summary: 'hypercholesterolemia; hyperlipidemia; hypertriglyceridemia; lipoproteins/lipoprotein lipase deficiency', cards: {} },
+            vascular:     { label: 'Vascular disorders', summary: 'disorders of the great vessels aneurysm, aortic (abdominal/thoracicdissection, ruptured; aneurysm, iliac, other peripheral vascular, ruptured; aortoiliac disease peripheral arterial vascular disease arterial embolus/thrombosis; arteriovenous fistula; atheroembolic disease; claudication; cholesterol emboli; hypertensive vascular disease; peripheral arterial disease; thromboangiitis obliterans diseases of the veins deep venous thrombosis, venous thromboembolism; phlebitis/thrombophlebitis; varicose veins; venous insufficiency; stasis ulcers, stasis dermatitis', cards: {} },
+            traumatic:    { label: 'Traumatic and mechanical disorders', summary: 'amputation and care of amputees; backache, including low back pain; blast injuries; compartment syndrome; contractures, hospital acquired; contusions; dislocations; fractures; sprains, strains; kyphoscoliosis, scoliosis; rotator cuff syndrome; slipped capi tal femoral epiphysis; dislocation of hip', cards: {} },
+            congenital:   { label: 'Congenital disorders, including disease in adults', summary: 'anomalous left coronary artery; atrial septal defect; coarctation of the aorta; endocardial cushion defect; patent foramen ovale; patent ductus arteriosus; tetralogy of Fallot; transposition of the great vessels; ventricular septal defect', cards: {} },
+            drug_effects: { label: 'Adverse effects of drugs on the cardiovascular system', summary: 'driamycin cocaine, amphetamine, PCP ACE inhibitors, calcium channel blockers, alpha blockers, minoxidil', cards: {} }
+          },
+          cards: {}
+        },
+        respiratory: {
+          label: 'Respiratory System', icon: '🫁',
+          subcategories: {
+            infectious:        { label: 'Infectious, immunologic, and inflammatory disorders, including microbiologic and host response to insult', summary: 'infectious, immunologic, and inflammatory disorders of the upper airways acute upper respiratory infection; viral infections (adenovirus, coronaviruses, coxsackievirus, influenza virus, parainfluenza virus, rhinovirusesusitis; nasopharyngitis; epiglottitis; Bordetella pertussis pneumonia; croup; acute laryngitis; acute laryngotracheitis; tracheitis; pharyngitis; streptococcal throat infections; tonsillitis; peritonsillar abscess; rhinitis, allergic, chronic; ulcers of nasal cavity/sinuses infectious, immunologic, and inflammatory disorders of the lower airways hospital acquired pneumonia; ven', cards: {} },
+            neoplasms:         { label: 'Neoplasms', summary: 'myxoma, metastases', cards: {} },
+            obstructive:       { label: 'Obstructive airway disease', summary: 'asthma, reactive airway disease; bronchiectasis; chronic airway obstruction; chronic obstructive pulmonary disease (COPD, chronic bronchitis, emphysema', cards: {} },
+            pneumoconiosis:    { label: 'Pneumoconiosis/fibrosing/restrictive pulmonary disorders/interstitial lung disease', summary: 'pneumoconiosis; asbestosis; silicosis; silo filler\'s lung, byssinosis, bagassosis, berylliosis; hypersensitivity pneumonitis; hypereosinophilic syndromes, Loeffler syndrome; interstitial pneumonia, usual (UIP desquamative (DIPnspecific', cards: {} },
+            resp_failure:      { label: 'Respiratory failure/respiratory arrest and pulmonary vascular disorders', summary: 'acute respiratory distress syndrome (ARDSnary hypertension; pulmonary vascular disorders, arteriovenous fistula; pulmonary edema, pulmonary cause and unspecified; pulmonary embolism; air and fat embolism; respiratory failure due to enteral feeding', cards: {} },
+            metabolic:         { label: 'Metabolic, regulatory, and structural disorders', summary: 'disorders of gas exchange; hypoventilation; hypoxia; ventilation perfusion imbalance', cards: {} },
+            pleura:            { label: 'Disorders of the pleura, mediastinum, and chest wall', summary: 'chylothorax; costochondritis; empyema; hemothorax; mediastinitis; pleural effusion; pleuritis; pneumomediastinum; pneumothorax', cards: {} },
+            traumatic:         { label: 'Traumatic and mechanical disorders', summary: 'ventricular puncture; myocardial contusion; myocardial rupture; traumatic aortic dissection; traumatic tamponade', cards: {} },
+            congenital:        { label: 'Congenital disorders', summary: 'anomalous left coronary artery; atrial septal defect; coarctation of the aorta; endocardial cushion defect; patent foramen ovale; patent ductus arteriosus; tetralogy of Fallot; transposition of the great vessels; ventricular septal defect', cards: {} },
+            drug_effects:      { label: 'Adverse effects of drugs on the respiratory system', summary: 'bleomycin, amiodarone adverse effects of 100% oxygen acute effects of tobacco/nicotine, inhalants, cocaine', cards: {} }
+          },
+          cards: {}
+        },
+        gastrointestinal: {
+          label: 'Gastrointestinal System', icon: '🏥',
+          subcategories: {
+            infectious:     { label: 'Infectious, immunologic, and inflammatory disorders, including microbiologic and host response to insult', summary: 'infectious disorders bacterial pseudomembranous colitis ( Clostridium difficile eritis/enteric infections (includes gastroenteritis (eg, Staphylococcus aureus Escherichia coli Listeria monocytogenes Yersinia enterocolitica Campylobacter species, Vibrio cholerae Salmonella species, Shigella species, traveler\'s/infectious diarrhea; hepatic abscess, subhepatic abscess, subphrenic abscess; peritonitis, primary and secondary viral infectious esophagitis (eg, CMV, herpeshepatitis A, B, C, D, E; coxsackievirus enteritis/colitis; Echovirus enteritis/colitis; rotavirus enteritis; mumps; gingivostom', cards: {} },
+            neoplasms:      { label: 'Neoplasms', summary: 'benign neoplasms: upper airways (eg, vocal cord polyps, nasal polyps, juvenile papillomatosis; lungs and pleura (eg, solitary pulmonary nodule malignant neoplasms upper airways: lip, oral cavity, and pharynx; head and neck cancer; larynx; trachea lower airways and pleura: malignant neoplasms of bronchus and/or lung (squamous cell, adenocarcinoma, large cell, small cell , bronchial carcinoid tumors malignant neoplasms of pleura (mesotheliomacondary malignant neoplasms of lung; secondary malignant neoplasms of pleura metastatic neoplasms including pleural', cards: {} },
+            signs_symptoms: { label: 'Signs, symptoms, and ill-defined disorders', summary: 'upper gastrointestinal bleeding; lower gastrointestinal bleeding; constipation; diarrhea; hematochezia; bright red rectal bleeding; melena; nausea, vomiting, rumination', cards: {} },
+            oral_esophagus: { label: 'Disorders of the oral cavity, salivary glands, and esophagus', summary: 'oral cavity and salivary glands abscessed tooth; dental caries; malocclusion; disorders of the salivary glands (eg, stones, sialadenitis, parotitis esophagus achalasia and cardiospasm; dysphagia; diverticulum (eg, Zenker esophageal periapical abscess without sinus; esophagitis/esophageal reflux (GERD esophagitis, pill; Mallory Weiss syndrome; paraesophageal (hiatalrnia; stricture and stenosis of esophagus', cards: {} },
+            stomach_colon:  { label: 'Disorders of the stomach, small intestine, colon, rectum, anus', summary: 'stomach dyspepsia/hyperacidity; gastric ulcer; gastritis; peptic ulcer; peptic ulcer perforation; gastroparesis small intestine, colon appendicitis; angiodysplasia; diverticula, diverticulitis, diverticulosis; duodenitis, duodenal ulcer, peptic ulcer; gastroenteritis and colitis (noninfectious granulomatous enterocolitis; Hirschsprung disease; impaction of intestine; intestinal obstruct ion/stricture; intussusception; irritable colon/irritable bowel syndrome; mesenteric ischemia/ischemic bowel/ischemic colitis; necrotizing enterocolitis; paralytic ileus; volvulus; malnutrition and malabsorpti', cards: {} },
+            liver_biliary:  { label: 'Disorders of the liver and biliary system, noninfectious', summary: 'liver cirrhosis; Dubin Johnson, Rotor syndromes; end stage liver disease, including indications for transplantation; Gilbert syndrome, Crigler Najjar syndrome; hepatic coma/hepatic encephalopathy; hepatitis, noninfectious; hepatitis, fatty liver, alcoholic; hepa torenal syndrome; hepatopulmonary syndrome; jaundice; non alcoholic fatty liver disease; portal hypertension/esophageal varices biliary system bile duct obstruction/cholestasis; cholangitis, including ascending; choledocholithiasis; cholelithiasis/cholecystitis; cholestasis due to parenteral nutrition; gallstone ileus; Mirizzi syndrome', cards: {} },
+            pancreas:       { label: 'Disorders of the pancreas', summary: 'pancreatitis, acute; pancreatitis, chronic; pancreatitis, hereditary; pancreatic cyst/pseudocyst; pancreatic duct obstruction; pancreatic insufficiency', cards: {} },
+            peritoneal:     { label: 'Disorders of the peritoneal cavity', summary: 'ascites', cards: {} },
+            traumatic:      { label: 'Traumatic and mechanical disorders', summary: 'upper airways epistaxis; barotrauma, sinus; laryngeal/pharyngeal obstruction; tracheoesophageal fistula; tracheal stenosis; tracheomalacia; trauma (eg, tracheal injuryoreign body (nose, pharynx, larynx, trachea; traumatic/mechanical disorders of the nasal cavity/si nuses (eg, septal perforation lower airways and pleura atelectasis; diaphragm/chest wall injury; drowning and near drowning; foreign body, upper and lower respiratory tract; penetrating chest wounds; pulmonary contusion; sleep apnea, obstructive and central; hypoventilation syndrome, obesity hypoventilation sy ndrome', cards: {} },
+            congenital:     { label: 'Congenital disorders', summary: 'bronchogenic cysts; congenital cysts; congenital diaphragmatic hernia; pulmonary sequestration; immotile cilia syndrome', cards: {} },
+            drug_effects:   { label: 'Adverse effects of drugs on the gastrointestinal system', summary: 'induced changes in motility (chronic laxative use, opioids induced gastritis, duodenitis, peptic ulcer disease (NSAIDs induced hepatitis (eg, acetaminophen, isoniazid induced pancreatitis (eg, thiazide diuretics', cards: {} }
+          },
+          cards: {}
+        },
+        renal_urinary: {
+          label: 'Renal & Urinary System', icon: '💧',
+          subcategories: {
+            infectious:     { label: 'Infectious, immunologic, and inflammatory disorders, including microbiologic and host response to insult', summary: 'infectious disorders upper urinary tract granulomatous pyelonephritis; perinephric abscess; pyelonephritis; pyonephrosis; renal abscess; renal tuberculosis lower urinary tract and urinary tract infections of unspecified location cystitis; chlamydial and nonchlamydial immunologic and inflammatory disorders upper urinary tract glomerular disorders: Alport syndrome; glomerular disease due to hepatitis B, C; glomerulonephritis, including poststreptococcal; IgA nephropathy; lupus nephritis; minimal change disease; nephrotic syndrome; thin basement membrane disease tubular interstitial disease: acut', cards: {} },
+            neoplasms:      { label: 'Neoplasms', summary: 'benign neoplasms, including polyps, cysts stomach; small intestine; colon, rectum, and anus, including polyps malignant neoplasms and pre malignant conditions oral cancer (eg, lips, mouth, tongue, salivary glands; esophageal, squamous and adenocarcinoma; Barrett esophagus; gastrinoma, Zollinger Ellison syndrome; gastrointestinal carcinoid tumors; gastrointestinal stromal tumors; small intestine; stomach, adenoc arcinoma, lymphoma, MALT; colon, rectum, anus; hereditary colon cancer syndromes, familial adenomatous polyposis (eg, Peutz Jeghers syndrome, Gardner syndrome, Turcot syndrome MUTYH as', cards: {} },
+            signs_symptoms: { label: 'Signs, symptoms, and ill-defined disorders', summary: 'dysuria; hematuria; oliguria, anuria; proteinuria', cards: {} },
+            metabolic:      { label: 'Metabolic and regulatory disorders', summary: 'disorders of gas exchange; hypoventilation; hypoxia; ventilation perfusion imbalance', cards: {} },
+            vascular:       { label: 'Vascular disorders', summary: 'renal artery stenosis (atherosclerosis, fibromuscular dysplasia, nephrosclerosis; renal vein thrombosis; renal infarction', cards: {} },
+            traumatic:      { label: 'Traumatic and mechanical disorders', summary: 'abdominal wall defects adhesions, postsurgical; digestive system complications of surgery; post gastric surgery syndromes (eg, blind loop syndrome, adhesions; duodenal tear; foreign body in digestive system; inguinal, femoral, and abdominal wall hernias; open wound, abdominal; perforation of hollow viscus and blunt trauma; perforation/rupture of esophagus (Boerhaave syndrome; umbilical hernia', cards: {} },
+            congenital:     { label: 'Congenital disorders', summary: 'annular pancreas, biliary atresia, cleft lip and palate, esophageal atresia, malrotation without volvulus, Meckel diverticulum, pyloric stenosis, tracheoesophageal fistula', cards: {} },
+            drug_effects:   { label: 'Adverse effects of drugs on the renal and urinary system', summary: 'ACE inhibitors; aminoglycosides; amphotericin B; cisplatin; furosemide; gadolinium (nephrogenic systemic fibrosisheroin; iodinated contrast dye; lithium; NSAIDs; penicillins; sulfa drugs; tenofovir; drug induced urinary retention', cards: {} }
+          },
+          cards: {}
+        },
+        pregnancy_childbirth: {
+          label: 'Pregnancy, Childbirth, & the Puerperium', icon: '🤰',
+          subcategories: {
+            prenatal:      { label: 'Prenatal care', summary: 'preconception counseling and care folate deficiency prevention; immunizations; nutritional assessment, including vitamins; Rh screening prenatal risk assessment/prevention adolescent pregnancy; antepartum fetal evaluation, including biophysical profile; genetic fetoprotein; diabetes mellitus; neural tube defects; Rh isoimmunization upervision of normal pregnancy assessment of gestational age; iron deficiency prevention; nutrition, including weight management; surveillance, including ultrasonography and assessment of fetal growth; vitamin deficiency prevention; infections, maternal, fetal, newb', cards: {} },
+            obstetric:     { label: 'Obstetric complications', summary: 'abortion, induced, septic, missed, spontaneous, threatened; acute fatty liver of pregnancy; anemia of pregnancy, sickle cell disease, thalassemia in pregnancy; antepartum hemorrhage, including third trimester bleeding; cardiomyopathy of pregnancy; cervical insufficiency, cervical shortening; cholestasis of pregnancy, intrahepatic; congenital abnormalities, maternal (eg, bicornuate uterus; ectopic pregnancy; fetal abnormality affecting management of mother (eg, hydrocephalus, spina bifida; fetal growth triction; gestational diabetes; maternal mortality; multiple gestation; placental abnormali', cards: {} },
+            labor_delivery:{ label: 'Labor and delivery', summary: 'labor and delivery, uncomplicated; labor and delivery, complicated, including shoulder dystocia; cesarean delivery, including complications; cord compression, cord prolapse; fetal malpresentations (eg, breech/external cephalic; intrapartum fetal evaluatio n, including fetal heart tones; intrapartum prophylaxis (eg, HIV, Chlamydia , gonococcal prophylaxis premature rupture of membranes; preterm (before 37 weeks\' gestationd postdates labor and delivery; threatened preterm labor', cards: {} },
+            puerperium:    { label: 'Puerperium, including complications', summary: 'lactation problems; breast feeding problems; lochia; postpartum cardiomyopathy; postpartum blues; postpartum hemorrhage; postpartum sepsis; retained placenta, products of conception (eg, placenta accretaerine atony', cards: {} },
+            newborn:       { label: 'Newborn (birth to 4 weeks of age)', summary: 'normal newborn examination of liveborn at admission to hospital screening, newborn disorders of the newborn screening, newborn; ABO incompatibility in newborn; hemolytic disease due to Rh incompatibility; birth asphyxia syndrome (liveborn neonatebirth trauma (eg, cord compression, brachial palsy, lacerations drug withdrawal syndrome in newborn; feeding problems in newborn; fetal growth and development abnorm alities, including fetal growth restriction; gastrointestinal obstruction; hypocalcemia of newborn; infections, congenital or peripartum (cytomegalovirus, herpes simplex viruses, HIV, he', cards: {} },
+            drug_effects:  { label: 'Adverse effects of drugs on pregnancy, childbirth, and the puerperium', summary: 'alcohol, tobacco, and other drugs (ATOD; prenatal radiation exposure; teratology (eg, ACE inhibitors, SSRIs, warfarin, infections, toxins', cards: {} },
+            systemic:      { label: 'Systemic disorders affecting pregnancy, labor and delivery, and puerperium', summary: 'appendicitis; asthma; carpal tunnel syndrome in pregnancy; cirrhosis; deep venous thrombosis (DVT diabetes mellitus; heart failure, valvular heart disease; hypertension; myasthenia gravis; obesity; pancreatitis; psychiatric disorders; renal calculus/calc uli; renal failure/renal disease, including SLE; seizure disorders; thyroid disorders, hypothyroidism, hyperthyroidism', cards: {} }
+          },
+          cards: {}
+        },
+        female_reproductive: {
+          label: 'Female and Transgender Reproductive System & Breast', icon: '♀️',
+          subcategories: {
+            breast:              { label: 'Breast', summary: '', cards: {} },
+            female_repro_system: { label: 'Female reproductive system', summary: '', cards: {} }
+          },
+          cards: {}
+        },
+        male_reproductive: {
+          label: 'Male and Transgender Reproductive System', icon: '♂️',
+          subcategories: {
+            infectious:   { label: 'Infectious, immunologic, and inflammatory disorders, including microbiologic and host response to insult', summary: '', cards: {} },
+            neoplasms:    { label: 'Neoplasms', summary: 'benign neoplasms and cysts polycystic kidney disease malignant neoplasms renal (eg, Wilms tumor/nephroblastoma, renal cell carcinoma, renal tumors associated with congenital/hereditary conditions; urinary bladder and collecting system', cards: {} },
+            metabolic:    { label: 'Metabolic and regulatory disorders, including sexual dysfunction', summary: '', cards: {} },
+            traumatic:    { label: 'Traumatic and mechanical disorders', summary: 'bladder rupture; neurogenic bladder; obstructive uropathy; posterior urethral valves; renal laceration; renal vascular injury; ureteral laceration/avulsion/disruption; urethral diverticulum; obstruction/stricture/prolapse, urethral/ureteral, vaginal walls, uterine, uterovaginal; urinary incontinence, including secondary enuresis; vesicoureteral reflux', cards: {} },
+            congenital:   { label: 'Congenital disorders', summary: 'double ureters/ureteral duplication/double collecting system; horseshoe kidney; hydronephrosis/reflux; renal agenesis, renal hypoplasia, renal dysplasia; single kidney', cards: {} },
+            drug_effects: { label: 'Adverse effects of drugs on the male reproductive system', summary: 'alcohol, tobacco, and other drugs (ATOD; prenatal radiation exposure; teratology (eg, ACE inhibitors, SSRIs, warfarin, infections, toxins', cards: {} }
+          },
+          cards: {}
+        },
+        endocrine: {
+          label: 'Endocrine System', icon: '⚗️',
+          subcategories: {
+            diabetes:      { label: 'Diabetes mellitus and other disorders of the endocrine pancreas', summary: 'diabetes mellitus diabetes mellitus, type 1; diabetes mellitus, type 1.5; diabetes mellitus, type 2; diabetes mellitus, acute complications: hyperosmolar coma, hypoglycemic shock, ketoacidosis, including cerebral edema, associated electrolyte abnormalities; diabetes mellitu s, chronic complications: gastrointestinal/gastroparesis, neurologic/neuropathy, ophthalmologic/retinopathy, peripheral vascular, renal/nephropathy, metabolic syndrome hypoglycemia and islet cell disorders hypoglycemia (secondary to insulinoma, surreptitious insulin use, sepsis, liver failure hyperglycemia (secondary to glu', cards: {} },
+            thyroid:       { label: 'Thyroid disorders', summary: 'cyst, nodule; euthyroid sick syndrome; goiter (euthyroid normal thyroid function with goiter; hypothyroidism; hyperthyroidism, including thyrotoxicosis and thyroid storm; thyroiditis, including Hashimoto; Graves disease; neoplasms (benign cysts and nodule s, thyroid cancer including papillary, follicular, medullary, and anaplastichyroid deficiency from pituitary disorder; infertility due to thyroid disease; secondary hypothyroidism and hyperthyroidism', cards: {} },
+            parathyroid:   { label: 'Parathyroid disorders', summary: 'hyperparathyroidism; hypoparathyroidism; metabolic bone disease', cards: {} },
+            adrenal:       { label: 'Adrenal disorders', summary: 'corticoadrenal insufficiency (Addison disease; adrenal insufficiency, secondary; hypocortisolism; Cushing syndrome; hyperaldosteronism; neoplasms, benign and malignant (adrenal neuroblastoma, pheochromocytoma, adrenal carcinoma, adrenal adenoma, aldostero noma, adrenal incidentaloma; delayed and precocious puberty; hypertensive endocrine disease', cards: {} },
+            pituitary:     { label: 'Pituitary disorders', summary: 'acromegaly/gigantism; diabetes insipidus; galactorrhea not associated with childbirth; panhypopituitarism from any cause; pituitary apoplexy (eg, Sheehan syndrome; growth hormone deficiency; short stature; SIADH (inappropriate secretion of ADH [vasopressi adenomas, craniopharyngioma, metastatic diseaseprolactinoma and hyperprolactinemia, including infertility due to these disorders; hypogonadism, primary and secondary', cards: {} },
+            hypothalamic:  { label: 'Hypothalamic endocrine disorders', summary: 'disorders of sexual differentiation; congenital adrenal hyperplasia; androgen insensitivity/resistance syndrome; congenital hypothyroidism', cards: {} },
+            men:           { label: 'Multiple endocrine neoplasia (MEN1, MEN2)', summary: 'disorders of sexual differentiation; congenital adrenal hyperplasia; androgen insensitivity/resistance syndrome; congenital hypothyroidism', cards: {} },
+            congenital:    { label: 'Congenital disorders', summary: '', cards: {} },
+            drug_effects:  { label: 'Adverse effects of drugs on the endocrine system', summary: '', cards: {} }
+          },
+          cards: {}
+        },
+        multisystem: {
+          label: 'Multisystem Processes & Disorders', icon: '🔄',
+          subcategories: {
+            infectious:        { label: 'Infectious, immunologic, and inflammatory disorders, including microbiologic and host response to insult', summary: 'infectious disorders bacterial brucellosis ( Brucella sppeptospirosis ( Leptospira interrogans me disease ( Borrelia burgdorferi elioidosis ( Burkholderia pseudomallei iliary (disseminatedculosis Mycobacterium tuberculosis ularemia ( Francisella tularensis oxic shock syndrome; Q fever ( Coxiella burnetii aplasmosis and ehrlichiosis ( Anaplasma Ehrlichia speciesckettsiosis (Rocky Mountain spotted fever [ Rickettsia rickettsii viral infectious mononucleosis (Epstein Barr virus cytomegalovirus infection; yellow fever; human herpesvirus 8 (HHV fungal blastomycosis ( Blastomyces dermatiti', cards: {} },
+            neoplasms:         { label: 'Neoplasms and related disorders', summary: '', cards: {} },
+            signs_symptoms:    { label: 'Signs, symptoms, and ill-defined disorders', summary: 'arthralgias; abdominal pain; chest pain; cough; dizziness, light headedness, syncope, including breath holding spells with syncope; dyspnea, shortness of breath; edema, anasarca; fatigue; fever of unknown origin; frailty; hemoptysis; pain management (in a nonaddiction, nonpalliative care setting, including appropriate opioid prescribing practices; joint pain; lymphedema; palpitations; pruritus; unexpected weight gain/weight loss', cards: {} },
+            nutrition:         { label: 'Nutrition', summary: 'protein calorie malnutrition (kwashiorkor, marasmus vitamin deficiencies and/or toxicities vitamin A; vitamin B; vitamin B , thiamine (eg, Wernicke Korsakoff syndrome, beriberi; vitamin , niacin; vitamin B , pyridoxine; vitamin B , folic acid; vitamin B , cobalamins (pernicious anemiamin C (scurvyvitamin D (rickets; vitamin E; vitamin K mineral deficiencies and/or toxicitie obesity enteral/parenteral nutrition (TPN', cards: {} },
+            toxins:            { label: 'Toxins and environmental extremes', summary: 'physical and associated disorders temperature (eg, hypothermia, hyperthermia, heat stroke radiation (eg, radon, uranium mining, imaging studies thermal injury, burns, electrocution, lightning decreased atmospheric pressure, high altitude sickness increased water pressure (nitrogen narcosis chemical including Gulf War illness gases, vapors, smoke inhalation agricultural hazards (eg, pesticides, green tobacco poisoning, anhydrous ammonia, Agent Orange volatile organic solvents metals (eg, lead other chemical agents (eg, ethylene glycol, carbon tetrachloride, methanol; BPA', cards: {} },
+            venomous:          { label: 'Venomous bites and stings', summary: 'hymenoptera bites and stings; scorpion bites; snake bites; spider bites; jellyfish stings', cards: {} },
+            fluid_electrolyte: { label: 'Fluid, electrolyte, and acid-base balance disorders', summary: 'fluid volume and electrolyte/ion disorders: fluid volume disorders; dehydration; hypovolemia; volume overload; electrolyte disorders; hyponatremia, hypernatremia; hypokalemia, hyperkalemia; hypocalcemia, hypercalcemia; hypophosphatemia, hyperphosphatemia; hypomagnesemia base disorders: metabolic acidosis; metabolic alkalosis; respiratory acidosis; respiratory alkalosis; mixed acid base disturbances', cards: {} },
+            multiple_trauma:   { label: 'Multiple trauma', summary: 'prioritization, blast injury involving more than one organ system', cards: {} },
+            genetic:           { label: 'Genetic, metabolic, and developmental disorders', summary: 'ultifactorial VATER /VACTERL association; association syndromes large genomic changes Beckwith Wiedemann syndrome; Down syndrome; Prader Willi syndrome enzymatic/metabolic alpha 1 antitrypsin deficiency; porphyria; inborn errors of metabolism (eg, maple syrup urine disease, diseases involving urea cycle storage diseases (eg, Fabry disease, Tay Sachs disease, glycogen storage disease, mucopolysaccharidoses structural protein disorders amyloidosis; Ehlers Danlos syndrome; immotile cilia syndrome (Kartagener syndrome; primary ciliary dyskinesiaarfan syndrome intracellular/extracellular transpor', cards: {} },
+            drug_effects:      { label: 'Adverse effects of drugs on multisystem disorders', summary: 'drug, medicinal, and biologic substance effects; exogenous steroid suppression of adrenal glands, anabolic steroids', cards: {} }
+          },
+          cards: {}
+        },
+        biostatistics_epidemiology: {
+          label: 'Biostatistics, Epidemiology/Population Health, & Interpretation of the Medical Literature', icon: '📊',
+          subcategories: {
+            epidemiology:       { label: 'Epidemiology/population health', summary: '', cards: {} },
+            study_design:       { label: 'Study design, types and selection of studies (includes dependent/independent variables)', summary: '', cards: {} },
+            measures_assoc:     { label: 'Measures of association', summary: '', cards: {} },
+            distributions:      { label: 'Distributions of data', summary: '', cards: {} },
+            correlation:        { label: 'Correlation and regression, uses and interpretation', summary: '', cards: {} },
+            testing_screening:  { label: 'Principles of testing and screening', summary: '', cards: {} },
+            study_interp:       { label: 'Study interpretation, drawing conclusions from data', summary: '', cards: {} },
+            clinical_decision:  { label: 'Clinical decision making, interpretation and use of evidence-based data and recommendations', summary: '', cards: {} },
+            research_ethics:    { label: 'Research ethics', summary: '', cards: {} }
+          },
+          cards: {}
+        },
+        social_sciences: {
+          label: 'Social Sciences', icon: '👥',
+          subcategories: {
+            communication:  { label: 'Communication and interpersonal skills, including health literacy and numeracy, cultural competence', summary: 'Patient interviewing, consultation, and interactions with the family (patient centered communication skills fostering the relationship (eg, expressing interest information gathering (eg, exploring patient\'s reaction to illness information provision (eg, providing information about working diagnosis making decisions (eg, eliciting patient\'s perspectives supporting emotions (eg, effective discussion with difficult patients enabling patient behaviors (eg, education and counseling Use of an interpreter or surrogate', cards: {} },
+            medical_ethics: { label: 'Medical ethics and jurisprudence, including issues related to death and dying and palliative care', summary: 'Consent/informed consent to treatment, permission to treat (full disclosure, risks and benefits, placebos, alternative therapies, conflict of interest, and vulnerable populations Determination of medical decision making capacity/informed refusal Involuntary admission Legal issues related to abuse (child, elder, and intimate partner child protective services, foster care, immunizations legal requirements for reporting abuse or neglect/obligation to warn Birth related issues Death and dying and palliative care life support advance directive, health care proxy, advance care planning brain death/d', cards: {} },
+            systems_based:  { label: 'Systems-based practice (including health systems, public health, community, schools) and patient safety (including basic concepts and terminology)', summary: 'Complexity/systems thinking Characteristics of a complex system and factors leading to complexity how complexity leads to error Health care/organizational behavior and culture environmental factors, workplace design and process; staffing; overcommitment, space, people, time, scheduling; standardization, reducing variance, simplification, metrics; safety culture; integration of care across settings; overutilization of resources ( imaging studies, antibiotics, opioids economic factors Quality improvement Improvement science principles Variation and standardization variation in process, practice', cards: {} },
+            health_policy:  { label: 'Health care policy and economics', summary: 'Health care policy Health care disparities race/ethnicity; numeracy/literacy; socioeconomic status; gender and sexual diversity/identity; immigration status; English language proficiency; incarcerated populations; disability Access to care critical access systems or hospitals Social justice Health care economics/Health care financing Types of insurance Medicare, Medicaid, private insurance, self Navigating the insurance system deductibles/co pays; in network; preferred providers Reimbursement issues affecting safety and quality emergency services EMTALA; pay performance', cards: {} }
+          },
+          cards: {}
         }
       }
     },
