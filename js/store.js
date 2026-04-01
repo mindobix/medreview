@@ -7,6 +7,26 @@ window.Store = (() => {
     return JSON.parse(JSON.stringify(obj));
   }
 
+  /* ── Convert legacy subcategory arrays to object format ────────── */
+  function _migrateLegacySubcategories(step) {
+    Object.values(step.categories).forEach(cat => {
+      if (Array.isArray(cat.subcategories)) {
+        const obj = {};
+        cat.subcategories.forEach(label => {
+          const slug = label.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+          obj[slug] = { label, cards: {} };
+        });
+        cat.subcategories = obj;
+      }
+      if (!cat.subcategories) cat.subcategories = {};
+      // Ensure each subcategory has a cards object
+      Object.values(cat.subcategories).forEach(sub => {
+        if (!sub.cards) sub.cards = {};
+      });
+      if (!cat.cards) cat.cards = {};
+    });
+  }
+
   function load() {
     try {
       const raw = localStorage.getItem(LS_KEY);
@@ -14,25 +34,48 @@ window.Store = (() => {
         const parsed = JSON.parse(raw);
         if (parsed && parsed.version && parsed.steps) {
           state = parsed;
-          // ensure settings defaults
           state.settings = Object.assign(
-            { darkMode: false, sidebarOpen: true, activeStep: 'step1', activeCategory: null },
+            { darkMode: false, sidebarOpen: true, activeStep: 'step1', activeCategory: null, activeSubcategory: null },
             state.settings || {}
           );
+          // Migrate any legacy subcategory arrays
+          Object.values(state.steps).forEach(_migrateLegacySubcategories);
+          // Backfill summaries from DEFAULT_DATA for any subcategory that lacks one
+          if (window.DEFAULT_DATA) {
+            Object.entries(window.DEFAULT_DATA.steps || {}).forEach(([stepKey, defaultStep]) => {
+              if (!state.steps[stepKey]) return;
+              Object.entries(defaultStep.categories || {}).forEach(([catSlug, defaultCat]) => {
+                if (!state.steps[stepKey].categories[catSlug]) return;
+                Object.entries(defaultCat.subcategories || {}).forEach(([subSlug, defaultSub]) => {
+                  const sub = state.steps[stepKey].categories[catSlug].subcategories[subSlug];
+                  if (sub && !sub.summary && defaultSub.summary) {
+                    sub.summary = defaultSub.summary;
+                  }
+                });
+              });
+            });
+            save();
+          }
           return;
         }
       }
     } catch (e) { /* ignore */ }
     // First run – seed with default data
     state = _deepClone(window.DEFAULT_DATA);
-    state.settings = { darkMode: false, sidebarOpen: true, activeStep: 'step1', activeCategory: null };
-    // stamp created/modified dates
+    state.settings = { darkMode: false, sidebarOpen: true, activeStep: 'step1', activeCategory: null, activeSubcategory: null };
     const now = new Date().toISOString().slice(0, 10);
     Object.values(state.steps).forEach(step => {
+      _migrateLegacySubcategories(step);
       Object.values(step.categories).forEach(cat => {
         Object.values(cat.cards).forEach(card => {
           card.created = card.created || now;
           card.modified = card.modified || now;
+        });
+        Object.values(cat.subcategories || {}).forEach(sub => {
+          Object.values(sub.cards).forEach(card => {
+            card.created = card.created || now;
+            card.modified = card.modified || now;
+          });
         });
       });
     });
@@ -55,48 +98,23 @@ window.Store = (() => {
     return Object.entries(state.steps).map(([key, s]) => ({ key, label: s.label }));
   }
 
+  /* ── Category helpers ───────────────────────────────────────────── */
   function getCategories(stepKey) {
     const step = state.steps[stepKey];
     if (!step) return [];
-    return Object.entries(step.categories).map(([slug, cat]) => ({
-      slug,
-      label: cat.label,
-      icon: cat.icon,
-      count: Object.keys(cat.cards || {}).length
-    }));
-  }
-
-  function getCards(stepKey, catSlug) {
-    try {
-      return Object.values(state.steps[stepKey].categories[catSlug].cards);
-    } catch (e) { return []; }
-  }
-
-  function getCard(stepKey, catSlug, id) {
-    try {
-      return state.steps[stepKey].categories[catSlug].cards[id] || null;
-    } catch (e) { return null; }
-  }
-
-  function upsertCard(stepKey, catSlug, cardData) {
-    const now = new Date().toISOString().slice(0, 10);
-    const cards = state.steps[stepKey].categories[catSlug].cards;
-    if (cardData.id && cards[cardData.id]) {
-      // update
-      cards[cardData.id] = Object.assign(cards[cardData.id], cardData, { modified: now });
-    } else {
-      // create
-      const id = cardData.id || crypto.randomUUID();
-      cards[id] = Object.assign({ id, flagged: false, created: now, modified: now }, cardData, { id });
-    }
-    save();
-  }
-
-  function deleteCard(stepKey, catSlug, id) {
-    try {
-      delete state.steps[stepKey].categories[catSlug].cards[id];
-      save();
-    } catch (e) {}
+    return Object.entries(step.categories).map(([slug, cat]) => {
+      const subcatCount = Object.keys(cat.subcategories || {}).length;
+      // total cards = category-level + all subcategory cards
+      const directCards = Object.keys(cat.cards || {}).length;
+      const subCards = Object.values(cat.subcategories || {}).reduce((sum, s) => sum + Object.keys(s.cards || {}).length, 0);
+      return {
+        slug,
+        label: cat.label,
+        icon: cat.icon,
+        count: directCards + subCards,
+        subcatCount
+      };
+    });
   }
 
   function upsertCategory(stepKey, catData) {
@@ -106,7 +124,7 @@ window.Store = (() => {
       cats[slug].label = catData.label;
       cats[slug].icon  = catData.icon || cats[slug].icon;
     } else {
-      cats[slug] = { label: catData.label, icon: catData.icon || '📌', cards: {} };
+      cats[slug] = { label: catData.label, icon: catData.icon || '📌', subcategories: {}, cards: {} };
     }
     save();
     return slug;
@@ -119,40 +137,146 @@ window.Store = (() => {
     } catch (e) {}
   }
 
-  function exportJSON() {
-    return JSON.stringify(state, null, 2);
+  /* ── Subcategory helpers ────────────────────────────────────────── */
+  function getSubcategories(stepKey, catSlug) {
+    try {
+      const subs = state.steps[stepKey].categories[catSlug].subcategories || {};
+      return Object.entries(subs).map(([slug, sub]) => ({
+        slug,
+        label: sub.label,
+        count: Object.keys(sub.cards || {}).length,
+        summary: sub.summary || ''
+      }));
+    } catch (e) { return []; }
   }
 
-  function importJSON(jsonString) {
-    const parsed = JSON.parse(jsonString); // let caller catch errors
-    if (!parsed.version || !parsed.steps) throw new Error('Invalid backup file format.');
-    state = parsed;
-    state.settings = Object.assign(
-      { darkMode: false, sidebarOpen: true, activeStep: 'step1', activeCategory: null },
-      state.settings || {}
-    );
+  function upsertSubcategory(stepKey, catSlug, subcatData) {
+    const slug = subcatData.slug || subcatData.label.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+    const cat = state.steps[stepKey].categories[catSlug];
+    if (!cat.subcategories) cat.subcategories = {};
+    if (cat.subcategories[slug]) {
+      cat.subcategories[slug].label = subcatData.label;
+    } else {
+      cat.subcategories[slug] = { label: subcatData.label, cards: {} };
+    }
+    save();
+    return slug;
+  }
+
+  function deleteSubcategory(stepKey, catSlug, subcatSlug) {
+    try {
+      delete state.steps[stepKey].categories[catSlug].subcategories[subcatSlug];
+      save();
+    } catch (e) {}
+  }
+
+  function getSubcategorySummary(stepKey, catSlug, subcatSlug) {
+    try {
+      return state.steps[stepKey].categories[catSlug].subcategories[subcatSlug].summary || '';
+    } catch (e) { return ''; }
+  }
+
+  function updateSubcategorySummary(stepKey, catSlug, subcatSlug, summary) {
+    try {
+      state.steps[stepKey].categories[catSlug].subcategories[subcatSlug].summary = summary;
+      save();
+    } catch (e) {}
+  }
+
+  /* ── Card helpers (subcatSlug optional – falls back to category cards) */
+  function _cardsRef(stepKey, catSlug, subcatSlug) {
+    const cat = state.steps[stepKey].categories[catSlug];
+    if (subcatSlug) {
+      if (!cat.subcategories[subcatSlug]) return null;
+      return cat.subcategories[subcatSlug].cards;
+    }
+    return cat.cards;
+  }
+
+  function getCards(stepKey, catSlug, subcatSlug) {
+    try {
+      const ref = _cardsRef(stepKey, catSlug, subcatSlug);
+      return ref ? Object.values(ref) : [];
+    } catch (e) { return []; }
+  }
+
+  function getCard(stepKey, catSlug, id, subcatSlug) {
+    try {
+      const ref = _cardsRef(stepKey, catSlug, subcatSlug);
+      return (ref && ref[id]) || null;
+    } catch (e) { return null; }
+  }
+
+  function upsertCard(stepKey, catSlug, cardData, subcatSlug) {
+    const now = new Date().toISOString().slice(0, 10);
+    const cards = _cardsRef(stepKey, catSlug, subcatSlug);
+    if (!cards) return;
+    if (cardData.id && cards[cardData.id]) {
+      cards[cardData.id] = Object.assign(cards[cardData.id], cardData, { modified: now });
+    } else {
+      const id = cardData.id || crypto.randomUUID();
+      cards[id] = Object.assign({ id, flagged: false, created: now, modified: now }, cardData, { id });
+    }
     save();
   }
 
-  function getAllCards() {
-    const results = [];
-    Object.entries(state.steps).forEach(([stepKey, step]) => {
-      Object.entries(step.categories).forEach(([catSlug, cat]) => {
-        Object.values(cat.cards).forEach(card => {
-          results.push({ stepKey, stepLabel: step.label, catSlug, catLabel: cat.label, card });
-        });
-      });
-    });
-    return results;
+  function deleteCard(stepKey, catSlug, id, subcatSlug) {
+    try {
+      const ref = _cardsRef(stepKey, catSlug, subcatSlug);
+      if (ref) { delete ref[id]; save(); }
+    } catch (e) {}
   }
 
-  function toggleFlag(stepKey, catSlug, id) {
-    const card = getCard(stepKey, catSlug, id);
+  function toggleFlag(stepKey, catSlug, id, subcatSlug) {
+    const card = getCard(stepKey, catSlug, id, subcatSlug);
     if (!card) return;
     card.flagged = !card.flagged;
     save();
     return card.flagged;
   }
 
-  return { load, save, getSettings, setSetting, getStepMeta, getCategories, getCards, getCard, upsertCard, deleteCard, upsertCategory, deleteCategory, exportJSON, importJSON, getAllCards, toggleFlag };
+  /* ── Search across everything ───────────────────────────────────── */
+  function getAllCards() {
+    const results = [];
+    Object.entries(state.steps).forEach(([stepKey, step]) => {
+      Object.entries(step.categories).forEach(([catSlug, cat]) => {
+        // category-level cards
+        Object.values(cat.cards || {}).forEach(card => {
+          results.push({ stepKey, stepLabel: step.label, catSlug, catLabel: cat.label, subcatSlug: null, subcatLabel: null, card });
+        });
+        // subcategory cards
+        Object.entries(cat.subcategories || {}).forEach(([subcatSlug, sub]) => {
+          Object.values(sub.cards || {}).forEach(card => {
+            results.push({ stepKey, stepLabel: step.label, catSlug, catLabel: cat.label, subcatSlug, subcatLabel: sub.label, card });
+          });
+        });
+      });
+    });
+    return results;
+  }
+
+  function exportJSON() {
+    return JSON.stringify(state, null, 2);
+  }
+
+  function importJSON(jsonString) {
+    const parsed = JSON.parse(jsonString);
+    if (!parsed.version || !parsed.steps) throw new Error('Invalid backup file format.');
+    state = parsed;
+    state.settings = Object.assign(
+      { darkMode: false, sidebarOpen: true, activeStep: 'step1', activeCategory: null, activeSubcategory: null },
+      state.settings || {}
+    );
+    Object.values(state.steps).forEach(_migrateLegacySubcategories);
+    save();
+  }
+
+  return {
+    load, save, getSettings, setSetting, getStepMeta,
+    getCategories, upsertCategory, deleteCategory,
+    getSubcategories, upsertSubcategory, deleteSubcategory,
+    getSubcategorySummary, updateSubcategorySummary,
+    getCards, getCard, upsertCard, deleteCard, toggleFlag,
+    exportJSON, importJSON, getAllCards
+  };
 })();
