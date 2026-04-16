@@ -74,14 +74,10 @@ window.Search = (() => {
     resultsEl.querySelectorAll('.search-result-item').forEach((el, i) => {
       el.addEventListener('click', () => {
         const { stepKey, catSlug, subcatSlug, card } = matches[i];
-        Store.setSetting('activeStep', stepKey);
-        Store.setSetting('activeCategory', catSlug);
-        Store.setSetting('activeSubcategory', subcatSlug || null);
-        Render.stepTabs();
-        Render.sidebar();
+        App.switchView('study');
+        App.navigateTo(stepKey, catSlug, subcatSlug || null);
         _clearSearch();
-        Render.cardList();
-        Editor.open(card.id);
+        setTimeout(() => Editor.open(card.id), 50);
       });
     });
   }
@@ -100,6 +96,7 @@ window.Search = (() => {
     input.addEventListener('input', () => {
       clearTimeout(_debounceTimer);
       clearBtn.classList.toggle('hidden', !input.value);
+      if (input.value && App && App.switchView) App.switchView('study');
       _debounceTimer = setTimeout(() => run(input.value), 280);
     });
 

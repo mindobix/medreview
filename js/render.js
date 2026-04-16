@@ -3,7 +3,12 @@ window.Render = (() => {
 
   function stepTabs() {
     const active = Store.getSettings().activeStep;
+    // Legacy .tab buttons (no longer used in header but kept for safety)
     document.querySelectorAll('.tab').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.step === active);
+    });
+    // New sidebar step sub-tabs
+    document.querySelectorAll('.step-tab').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.step === active);
     });
   }

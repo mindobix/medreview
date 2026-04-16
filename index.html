@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MedReview — USMLE Step Prep</title>
+  <title>MedReview — Step 1 Command Center</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
@@ -13,17 +13,37 @@
     <header id="header">
       <div class="header-left">
         <button id="sidebar-toggle" title="Toggle sidebar">☰</button>
-        <span class="logo">Med<strong>Review</strong></span>
+        <span class="logo">Med<strong>Review</strong> <span class="logo-step">Step 1</span></span>
       </div>
 
-      <nav class="step-tabs" role="tablist">
-        <button class="tab active" data-step="step1" role="tab">Step 1</button>
-        <button class="tab" data-step="step2" role="tab">Step 2 CK</button>
-        <button class="tab" data-step="step3" role="tab">Step 3</button>
+      <!-- Primary view navigation -->
+      <nav class="view-tabs" role="tablist">
+        <button class="view-tab active" data-view="dashboard" role="tab">
+          <span class="vtab-icon">🏠</span><span class="vtab-label">Dashboard</span>
+        </button>
+        <button class="view-tab" data-view="study" role="tab">
+          <span class="vtab-icon">📚</span><span class="vtab-label">Study Cards</span>
+        </button>
+        <button class="view-tab" data-view="practice" role="tab">
+          <span class="vtab-icon">🎯</span><span class="vtab-label">Practice</span>
+        </button>
+        <button class="view-tab" data-view="scores" role="tab">
+          <span class="vtab-icon">📊</span><span class="vtab-label">Score Tracker</span>
+        </button>
+        <button class="view-tab" data-view="schedule" role="tab">
+          <span class="vtab-icon">🗓️</span><span class="vtab-label">Schedule</span>
+        </button>
       </nav>
 
+      <!-- Global Step selector (drives entire app) -->
+      <div class="global-step-selector">
+        <button class="gss-btn active" data-gstep="step1">Step 1</button>
+        <button class="gss-btn" data-gstep="step2">Step 2 CK</button>
+        <button class="gss-btn" data-gstep="step3">Step 3</button>
+      </div>
+
       <div class="header-right">
-        <div class="search-wrap">
+        <div class="search-wrap" id="search-wrap-header">
           <input type="text" id="search-input" placeholder="Search cards…" autocomplete="off" />
           <button id="search-clear" title="Clear search" class="hidden">✕</button>
         </div>
@@ -34,101 +54,134 @@
       </div>
     </header>
 
-    <!-- ── BODY LAYOUT ───────────────────────────────────────────── -->
-    <div id="main-layout">
+    <!-- ── VIEWS CONTAINER ─────────────────────────────────────────── -->
+    <div id="views-container">
 
-      <!-- Sidebar -->
-      <aside id="sidebar">
-        <div class="sidebar-header">
-          <span>Categories</span>
-          <button id="btn-add-category" title="Add category">＋</button>
-        </div>
-        <div id="category-list"></div>
-      </aside>
+      <!-- ══ VIEW: DASHBOARD ═════════════════════════════════════════ -->
+      <div id="view-dashboard" class="view-panel active-view">
+        <!-- Rendered by Dashboard.render() -->
+      </div>
 
-      <!-- Content pane -->
-      <main id="content">
+      <!-- ══ VIEW: STUDY CARDS ═══════════════════════════════════════ -->
+      <div id="view-study" class="view-panel hidden-view">
+        <div id="study-layout">
 
-        <!-- Content toolbar -->
-        <div id="content-toolbar">
-          <div id="content-breadcrumb"></div>
-          <div id="content-actions">
-            <button id="btn-slideshow" class="btn-secondary hidden">▶ Slideshow</button>
-            <button id="btn-add-card" class="btn-primary hidden">＋ Add Card</button>
-          </div>
-        </div>
+          <!-- Sidebar -->
+          <aside id="sidebar">
+            <div class="sidebar-header">
+              <span>Systems</span>
+              <button id="btn-add-category" title="Add category">＋</button>
+            </div>
+            <!-- Step sub-tabs inside sidebar -->
+            <div class="sidebar-step-tabs">
+              <button class="step-tab active" data-step="step1">Step 1</button>
+              <button class="step-tab" data-step="step2">Step 2</button>
+              <button class="step-tab" data-step="step3">Step 3</button>
+            </div>
+            <div id="category-list"></div>
+          </aside>
 
-        <!-- Subcategory summary panel -->
-        <div id="subcat-summary-panel" class="hidden">
-          <div id="subcat-summary-header">
-            <span id="subcat-summary-title">Overview</span>
-            <button id="btn-edit-summary" title="Edit summary">✏ Edit</button>
-          </div>
-          <div id="subcat-summary-body">
-            <div id="subcat-summary-view"></div>
-            <div id="subcat-summary-edit" class="hidden">
-              <textarea id="subcat-summary-textarea" placeholder="Enter a summary for this subcategory…" rows="5"></textarea>
-              <div id="subcat-summary-edit-actions">
-                <button id="btn-save-summary" class="btn-primary">💾 Save</button>
-                <button id="btn-cancel-summary" class="btn-secondary">Cancel</button>
+          <!-- Content pane -->
+          <main id="content">
+
+            <!-- Content toolbar -->
+            <div id="content-toolbar">
+              <div id="content-breadcrumb"></div>
+              <div id="content-actions">
+                <button id="btn-slideshow" class="btn-secondary hidden">▶ Slideshow</button>
+                <button id="btn-add-card" class="btn-primary hidden">＋ Add Card</button>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Card grid -->
-        <div id="card-list"></div>
-
-        <!-- Empty state -->
-        <div id="empty-state" class="hidden">
-          <div class="empty-icon">📋</div>
-          <p>No cards in this category yet.</p>
-          <button id="btn-empty-add" class="btn-primary">＋ Add First Card</button>
-        </div>
-
-        <!-- Search results -->
-        <div id="search-results" class="hidden"></div>
-
-        <!-- Card editor panel (slides in over card list) -->
-        <div id="card-editor" class="hidden">
-
-          <div id="editor-toolbar">
-            <div class="toolbar-group">
-              <button data-cmd="bold"                title="Bold"><b>B</b></button>
-              <button data-cmd="italic"              title="Italic"><i>I</i></button>
-              <button data-cmd="underline"           title="Underline"><u>U</u></button>
-              <button id="btn-highlight"             title="Highlight selection">🖊 Highlight</button>
-              <button id="btn-remove-highlight"      title="Remove highlight">✕ Highlight</button>
+            <!-- Subcategory summary panel -->
+            <div id="subcat-summary-panel" class="hidden">
+              <div id="subcat-summary-header">
+                <span id="subcat-summary-title">Overview</span>
+                <button id="btn-edit-summary" title="Edit summary">✏ Edit</button>
+              </div>
+              <div id="subcat-summary-body">
+                <div id="subcat-summary-view"></div>
+                <div id="subcat-summary-edit" class="hidden">
+                  <textarea id="subcat-summary-textarea" placeholder="Enter a summary for this subcategory…" rows="5"></textarea>
+                  <div id="subcat-summary-edit-actions">
+                    <button id="btn-save-summary" class="btn-primary">💾 Save</button>
+                    <button id="btn-cancel-summary" class="btn-secondary">Cancel</button>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="toolbar-sep"></div>
-            <div class="toolbar-group">
-              <button data-cmd="insertUnorderedList" title="Bullet list">• List</button>
-              <button data-cmd="insertOrderedList"   title="Numbered list">1. List</button>
-              <button data-cmd="removeFormat"        title="Clear formatting">✕ Format</button>
-            </div>
-            <div class="toolbar-sep"></div>
-            <div class="toolbar-group toolbar-right">
-              <button id="btn-flag-card"   title="Flag for review">🚩 Flag</button>
-              <button id="btn-save-card"   class="btn-primary">💾 Save</button>
-              <button id="btn-delete-card" class="btn-danger">🗑 Delete</button>
-              <button id="btn-close-editor" title="Close editor">✕</button>
-            </div>
-          </div>
 
-          <div id="editor-body">
-            <input type="text" id="card-title-input" placeholder="Card title…" />
-            <div
-              id="card-content-input"
-              contenteditable="true"
-              spellcheck="true"
-              data-placeholder="Enter card content… (supports rich text and highlights)"
-            ></div>
-          </div>
+            <!-- Card grid -->
+            <div id="card-list"></div>
 
+            <!-- Empty state -->
+            <div id="empty-state" class="hidden">
+              <div class="empty-icon">📋</div>
+              <p>No cards in this category yet.</p>
+              <button id="btn-empty-add" class="btn-primary">＋ Add First Card</button>
+            </div>
+
+            <!-- Search results -->
+            <div id="search-results" class="hidden"></div>
+
+            <!-- Card editor panel (slides in over card list) -->
+            <div id="card-editor" class="hidden">
+
+              <div id="editor-toolbar">
+                <div class="toolbar-group">
+                  <button data-cmd="bold"                title="Bold"><b>B</b></button>
+                  <button data-cmd="italic"              title="Italic"><i>I</i></button>
+                  <button data-cmd="underline"           title="Underline"><u>U</u></button>
+                  <button id="btn-highlight"             title="Highlight selection">🖊 Highlight</button>
+                  <button id="btn-remove-highlight"      title="Remove highlight">✕ Highlight</button>
+                </div>
+                <div class="toolbar-sep"></div>
+                <div class="toolbar-group">
+                  <button data-cmd="insertUnorderedList" title="Bullet list">• List</button>
+                  <button data-cmd="insertOrderedList"   title="Numbered list">1. List</button>
+                  <button data-cmd="removeFormat"        title="Clear formatting">✕ Format</button>
+                </div>
+                <div class="toolbar-sep"></div>
+                <div class="toolbar-group toolbar-right">
+                  <button id="btn-flag-card"   title="Flag for review">🚩 Flag</button>
+                  <button id="btn-save-card"   class="btn-primary">💾 Save</button>
+                  <button id="btn-delete-card" class="btn-danger">🗑 Delete</button>
+                  <button id="btn-close-editor" title="Close editor">✕</button>
+                </div>
+              </div>
+
+              <div id="editor-body">
+                <input type="text" id="card-title-input" placeholder="Card title…" />
+                <div
+                  id="card-content-input"
+                  contenteditable="true"
+                  spellcheck="true"
+                  data-placeholder="Enter card content… (supports rich text and highlights)"
+                ></div>
+              </div>
+
+            </div>
+
+          </main>
         </div>
+      </div>
 
-      </main>
-    </div>
+      <!-- ══ VIEW: SCORE TRACKER ══════════════════════════════════════ -->
+      <div id="view-scores" class="view-panel hidden-view">
+        <!-- Rendered by Tracker.render() -->
+      </div>
+
+      <!-- ══ VIEW: PRACTICE ══════════════════════════════════════════ -->
+      <div id="view-practice" class="view-panel hidden-view">
+        <!-- Rendered by Practice.render() -->
+      </div>
+
+      <!-- ══ VIEW: SCHEDULE ═══════════════════════════════════════════ -->
+      <div id="view-schedule" class="view-panel hidden-view">
+        <!-- Rendered by Schedule.render() -->
+      </div>
+
+    </div><!-- /#views-container -->
 
     <!-- ── SLIDESHOW OVERLAY ─────────────────────────────────────── -->
     <div id="slideshow-overlay" class="hidden" role="dialog" aria-modal="true">
@@ -173,14 +226,14 @@
 
   </div><!-- /#app -->
 
-  <!-- ── SCRIPTS (load order matters — no ES modules to avoid CORS on file://) -->
-  <!-- Cache-bust: ?v= timestamp forces browser to fetch latest on every load -->
+  <!-- ── SCRIPTS ───────────────────────────────────────────────────── -->
   <script>
     (function() {
       var v = Date.now();
       var scripts = [
         'js/defaultData.js','js/store.js','js/ui.js','js/render.js',
-        'js/editor.js','js/slideshow.js','js/search.js','js/io.js','js/app.js'
+        'js/editor.js','js/slideshow.js','js/search.js','js/io.js',
+        'js/dashboard.js','js/tracker.js','js/schedule.js','js/practice.js','js/app.js'
       ];
       scripts.forEach(function(src) {
         document.write('<script src="' + src + '?v=' + v + '"><\/script>');

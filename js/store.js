@@ -27,17 +27,40 @@ window.Store = (() => {
     });
   }
 
+  const DEFAULT_SETTINGS = {
+    darkMode: false,
+    sidebarOpen: true,
+    globalStep: 'step1',
+    activeStep: 'step1',
+    activeCategory: null,
+    activeSubcategory: null,
+    examDate: null,
+    targetScore: 65,
+    studyHoursPerDay: 8,
+    dedicatedWeeks: 8,
+    baselineScore: null
+  };
+
   function load() {
     try {
       const raw = localStorage.getItem(LS_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
+        // Version 1.0 → 2.0 migration: reset to new organ-system categories
+        // but preserve any user cards added under the new slugs
+        if (parsed && parsed.version === '1.0' && parsed.steps) {
+          // Seed fresh, but carry over settings and scores
+          state = _deepClone(window.DEFAULT_DATA);
+          state.settings = Object.assign({}, DEFAULT_SETTINGS, parsed.settings || {});
+          state.scores = parsed.scores || [];
+          Object.values(state.steps).forEach(_migrateLegacySubcategories);
+          save();
+          return;
+        }
         if (parsed && parsed.version && parsed.steps) {
           state = parsed;
-          state.settings = Object.assign(
-            { darkMode: false, sidebarOpen: true, activeStep: 'step1', activeCategory: null, activeSubcategory: null },
-            state.settings || {}
-          );
+          state.settings = Object.assign({}, DEFAULT_SETTINGS, state.settings || {});
+          if (!state.scores) state.scores = [];
           // Migrate any legacy subcategory arrays
           Object.values(state.steps).forEach(_migrateLegacySubcategories);
           // Backfill summaries from DEFAULT_DATA for any subcategory that lacks one
@@ -62,7 +85,8 @@ window.Store = (() => {
     } catch (e) { /* ignore */ }
     // First run – seed with default data
     state = _deepClone(window.DEFAULT_DATA);
-    state.settings = { darkMode: false, sidebarOpen: true, activeStep: 'step1', activeCategory: null, activeSubcategory: null };
+    state.settings = Object.assign({}, DEFAULT_SETTINGS);
+    state.scores = [];
     const now = new Date().toISOString().slice(0, 10);
     Object.values(state.steps).forEach(step => {
       _migrateLegacySubcategories(step);
@@ -255,6 +279,30 @@ window.Store = (() => {
     return results;
   }
 
+  /* ── Score tracking ─────────────────────────────────────────────── */
+  function getScores() {
+    return (state.scores || []).slice().sort((a, b) => a.date > b.date ? 1 : -1);
+  }
+
+  function addScore(scoreData) {
+    if (!state.scores) state.scores = [];
+    const id = crypto.randomUUID();
+    const entry = Object.assign({ id, date: new Date().toISOString().slice(0, 10) }, scoreData);
+    state.scores.push(entry);
+    save();
+    return id;
+  }
+
+  function deleteScore(id) {
+    state.scores = (state.scores || []).filter(s => s.id !== id);
+    save();
+  }
+
+  function getLatestScore() {
+    const scores = getScores().filter(s => ['NBME', 'UWSA'].includes(s.type));
+    return scores.length ? scores[scores.length - 1] : null;
+  }
+
   function exportJSON() {
     return JSON.stringify(state, null, 2);
   }
@@ -263,10 +311,8 @@ window.Store = (() => {
     const parsed = JSON.parse(jsonString);
     if (!parsed.version || !parsed.steps) throw new Error('Invalid backup file format.');
     state = parsed;
-    state.settings = Object.assign(
-      { darkMode: false, sidebarOpen: true, activeStep: 'step1', activeCategory: null, activeSubcategory: null },
-      state.settings || {}
-    );
+    state.settings = Object.assign({}, DEFAULT_SETTINGS, state.settings || {});
+    if (!state.scores) state.scores = [];
     Object.values(state.steps).forEach(_migrateLegacySubcategories);
     save();
   }
@@ -277,6 +323,7 @@ window.Store = (() => {
     getSubcategories, upsertSubcategory, deleteSubcategory,
     getSubcategorySummary, updateSubcategorySummary,
     getCards, getCard, upsertCard, deleteCard, toggleFlag,
-    exportJSON, importJSON, getAllCards
+    exportJSON, importJSON, getAllCards,
+    getScores, addScore, deleteScore, getLatestScore
   };
 })();

@@ -1,29 +1,107 @@
-/* app.js – entry point, wires everything together */
+/* app.js – entry point, wires all modules together */
 window.App = (() => {
+  let _currentView = 'dashboard';
 
-  /* ── Navigate to a step + category + optional subcategory ────── */
+  /* ── View switching ─────────────────────────────────────────────── */
+  function switchView(view) {
+    _currentView = view;
+
+    // Toggle panels
+    document.querySelectorAll('.view-panel').forEach(el => {
+      el.classList.remove('active-view');
+      el.classList.add('hidden-view');
+    });
+    const target = document.getElementById('view-' + view);
+    if (target) {
+      target.classList.remove('hidden-view');
+      target.classList.add('active-view');
+    }
+
+    // Toggle header tabs
+    document.querySelectorAll('.view-tab').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.view === view);
+    });
+
+    // Toggle search bar visibility (only in study view)
+    const searchWrap = document.getElementById('search-wrap-header');
+    if (searchWrap) searchWrap.style.display = view === 'study' ? '' : 'none';
+
+    // Render the relevant view
+    if (view === 'dashboard') {
+      Dashboard.render();
+    } else if (view === 'study') {
+      Render.sidebar();
+      Render.cardList();
+    } else if (view === 'practice') {
+      Practice.render();
+    } else if (view === 'scores') {
+      Tracker.render();
+    } else if (view === 'schedule') {
+      Schedule.render();
+    }
+  }
+
+  /* ── Navigate within study view ────────────────────────────────── */
   function navigateTo(stepKey, catSlug, subcatSlug) {
     Store.setSetting('activeStep', stepKey);
     Store.setSetting('activeCategory', catSlug);
     Store.setSetting('activeSubcategory', subcatSlug || null);
-    Render.stepTabs();
+
+    // Sync step sub-tabs in sidebar
+    document.querySelectorAll('.step-tab').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.step === stepKey);
+    });
+
     Render.sidebar();
     Render.cardList();
   }
 
-  /* ── Step tab clicks ────────────────────────────────────────── */
-  function _bindStepTabs() {
-    document.querySelectorAll('.tab').forEach(btn => {
+  /* ── Global step switching ──────────────────────────────────────── */
+  function switchGlobalStep(stepKey) {
+    Store.setSetting('globalStep', stepKey);
+
+    // Update header pill buttons
+    document.querySelectorAll('.gss-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.gstep === stepKey);
+    });
+
+    // Update logo step label
+    const logoStep = document.querySelector('.logo-step');
+    const labels = { step1: 'Step 1', step2: 'Step 2 CK', step3: 'Step 3' };
+    if (logoStep) logoStep.textContent = labels[stepKey] || 'Step 1';
+
+    // Re-render whatever view is active
+    if (_currentView === 'dashboard') Dashboard.render();
+    else if (_currentView === 'study') { Render.sidebar(); Render.cardList(); }
+    else if (_currentView === 'schedule') Schedule.render();
+  }
+
+  function _bindGlobalStepSelector() {
+    document.querySelectorAll('.gss-btn').forEach(btn => {
+      btn.addEventListener('click', () => switchGlobalStep(btn.dataset.gstep));
+    });
+  }
+
+  /* ── View tab clicks ────────────────────────────────────────────── */
+  function _bindViewTabs() {
+    document.querySelectorAll('.view-tab').forEach(btn => {
+      btn.addEventListener('click', () => switchView(btn.dataset.view));
+    });
+  }
+
+  /* ── Sidebar step sub-tabs ─────────────────────────────────────── */
+  function _bindSidebarStepTabs() {
+    document.querySelectorAll('.step-tab').forEach(btn => {
       btn.addEventListener('click', () => {
         const stepKey = btn.dataset.step;
-        const cats    = Store.getCategories(stepKey);
+        const cats = Store.getCategories(stepKey);
         const firstCat = cats.length ? cats[0].slug : null;
         navigateTo(stepKey, firstCat, null);
       });
     });
   }
 
-  /* ── Add category button ────────────────────────────────────── */
+  /* ── Add category button ────────────────────────────────────────── */
   function _bindAddCategory() {
     document.getElementById('btn-add-category').addEventListener('click', () => {
       const stepKey = Store.getSettings().activeStep;
@@ -38,7 +116,7 @@ window.App = (() => {
     });
   }
 
-  /* ── Summary panel edit/save/cancel ────────────────────────── */
+  /* ── Summary panel edit/save/cancel ────────────────────────────── */
   function _bindSummaryPanel() {
     document.getElementById('btn-edit-summary').addEventListener('click', () => {
       const s = Store.getSettings();
@@ -63,7 +141,7 @@ window.App = (() => {
     });
   }
 
-  /* ── Init ───────────────────────────────────────────────────── */
+  /* ── Init ───────────────────────────────────────────────────────── */
   function init() {
     Store.load();
     UI.init();
@@ -72,16 +150,18 @@ window.App = (() => {
     Search.init();
     IO.init();
 
-    _bindStepTabs();
+    _bindViewTabs();
+    _bindGlobalStepSelector();
+    _bindSidebarStepTabs();
     _bindAddCategory();
     _bindSummaryPanel();
 
+    // Validate saved navigation state
     const settings = Store.getSettings();
     let activeStep = settings.activeStep || 'step1';
     let activeCat  = settings.activeCategory;
     let activeSub  = settings.activeSubcategory;
 
-    // Validate saved category still exists
     const cats = Store.getCategories(activeStep);
     if (activeCat && !cats.find(c => c.slug === activeCat)) {
       activeCat = cats.length ? cats[0].slug : null;
@@ -90,11 +170,9 @@ window.App = (() => {
       Store.setSetting('activeSubcategory', null);
     } else if (!activeCat && cats.length) {
       activeCat = cats[0].slug;
-      activeSub = null;
       Store.setSetting('activeCategory', activeCat);
     }
 
-    // Validate saved subcategory still exists
     if (activeCat && activeSub) {
       const subs = Store.getSubcategories(activeStep, activeCat);
       if (!subs.find(s => s.slug === activeSub)) {
@@ -103,9 +181,22 @@ window.App = (() => {
       }
     }
 
-    Render.stepTabs();
-    Render.sidebar();
-    Render.cardList();
+    // Sync step sub-tabs
+    document.querySelectorAll('.step-tab').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.step === activeStep);
+    });
+
+    // Sync global step selector
+    const globalStep = settings.globalStep || 'step1';
+    document.querySelectorAll('.gss-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.gstep === globalStep);
+    });
+    const logoStep = document.querySelector('.logo-step');
+    const stepLabels = { step1: 'Step 1', step2: 'Step 2 CK', step3: 'Step 3' };
+    if (logoStep) logoStep.textContent = stepLabels[globalStep] || 'Step 1';
+
+    // Start on dashboard
+    switchView('dashboard');
   }
 
   if (document.readyState === 'loading') {
@@ -114,5 +205,5 @@ window.App = (() => {
     init();
   }
 
-  return { navigateTo };
+  return { navigateTo, switchView, switchGlobalStep };
 })();

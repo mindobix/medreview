@@ -26,9 +26,7 @@ window.IO = (() => {
         const settings = Store.getSettings();
         UI.applyDarkMode(settings.darkMode);
         UI.applySidebar(settings.sidebarOpen !== false);
-        Render.stepTabs();
-        Render.sidebar();
-        Render.cardList();
+        App.switchView('dashboard');
         UI.toast('Backup restored successfully', 'success');
       } catch (err) {
         UI.toast('Import failed: ' + err.message, 'error');
