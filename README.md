@@ -1,211 +1,210 @@
-# MedReview — Your Personal USMLE Study Companion
+# MedReview — USMLE Command Center
 
-> **Study smarter. Not just harder.**
-> A free, offline-first flashcard and annotation app built specifically for USMLE Step 1, Step 2 CK, and Step 3 preparation.
+> **Track. Review. Conquer.**
+> A free, offline-first USMLE study platform built for med students who need to close a score gap — not manage a subscription.
 
 ---
 
-## Why MedReview?
+## What Is This?
 
-Medical school is relentless. Between lectures, shelf exams, and clinical rotations, the last thing you need is a study tool that fights you — subscription paywalls, internet requirements, bloated interfaces, or content that doesn't match what's actually tested.
+MedReview is a complete study command center that runs entirely in your browser with zero server, zero account, and zero subscription. It covers the full pipeline: watch Pathoma videos → review high-yield flashcards → practice clinical vignettes → track your NBME/UWorld scores → generate a week-by-week study plan.
 
-**MedReview was built by someone who understands that problem.**
-
-It lives entirely in your browser, stores everything locally on your device, and ships pre-loaded with high-yield content organized exactly the way USMLE prep demands — by organ system, discipline, and exam step. No account. No subscription. No connection required. Just open and study.
+Switch between Step 1, Step 2 CK, and Step 3 in one click. Everything — dashboard content, organ system weights, resources, and scheduled topics — adapts instantly.
 
 ---
 
 ## Who Is This For?
 
 - **MS1 & MS2 students** building foundational knowledge for Step 1
-- **MS3 students** grinding Step 2 CK while surviving clerkships
-- **Residents** preparing for Step 3 between overnight calls
-- **Re-takers** who need a cleaner, more focused review system
-- **Anyone** who's tired of paying $50/month for a flashcard app
+- **MS3 students** grinding Step 2 CK during clerkships
+- **Residents** squeezing Step 3 prep between overnight calls
+- **Re-takers** who need a focused, distraction-free review system
+- **Anyone** paying $50/month for a USMLE prep subscription
 
 ---
 
 ## Features
 
-### Pre-Loaded High-Yield Content
-Don't start from a blank page. MedReview ships with curated, exam-focused cards across all three steps:
+### 🔬 Pathoma Video Viewer
+A dedicated viewer for all 19 Pathoma chapters (117 videos total).
 
-| Step | Categories Included |
-|------|-------------------|
-| **Step 1** | Biochemistry & Genetics, Physiology, Pathology, Pharmacology, Microbiology & Immunology, Anatomy & Embryology, Cardiovascular, Behavioral Science & Biostatistics |
-| **Step 2 CK** | Internal Medicine, Cardiology, OB/GYN, Pediatrics, Psychiatry, Surgery, Emergency Medicine |
-| **Step 3** | Ambulatory Medicine, Inpatient Management, Emergency Management, Pharmacotherapy, Biostatistics & Epidemiology, Clinical Decision Making |
+- **Full top nav** with all 19 chapter pills — color-coded with green completion dots
+- **Sidebar video list** per chapter with watched/unwatched checkmarks and per-chapter progress bar
+- **HTML5 video player** with auto-advance to the next video in a chapter
+- **Auto-mark watched** when you reach 80% through a video
+- **Chapter slide PDFs** linked per chapter; full slides library modal (📑)
+- **Main Pathoma.pdf** one click away in the nav bar
+- **Global progress** tracker showing X / 117 videos watched across all chapters
+- Keyboard shortcuts: `→`/`n` next, `←`/`p` prev, `w` toggle watched, `Esc` close modal
+- Progress persisted in `localStorage` — never lose your place
 
-Every pre-loaded card is written to reflect what's **actually tested** — mnemonics, classic presentations, distinguishing features, and high-yield tables.
+### 🏠 Step-Aware Dashboard
+The Command Center adapts to whichever exam you're preparing for.
 
----
+- **Exam countdown** with urgency color (green → yellow → red as the date approaches)
+- **Latest score vs. target** with gap indicator (▲/▼)
+- **System priority bars** weighted by official USMLE exam content percentages
+- **Flagged cards** quick-access list (jump straight to review)
+- **Score trend mini-chart** — all NBME/UWorld/UWSA/Free120 scores plotted over time
+- **Resource stack** — curated books and tools specific to the selected Step
+- One-click navigation from any system bar to its Study Cards
 
-### Rich Text Editor with Highlighting
-Your notes deserve more than plain text.
+### 🔄 Global Step Selector (Step 1 / Step 2 CK / Step 3)
+A persistent pill selector in the header changes the entire app context:
 
-- **Format freely** — bold, italic, underline, bullet lists, numbered lists
-- **Highlight key facts** — select any text and mark it in yellow. Highlights are saved permanently, so when you review a card later, the most important details jump out immediately
-- **Remove highlights** selectively or clear them all with one click
-- **Flag cards** for review — mark cards you're still shaky on with 🚩 and come back to them
+| What changes | Step 1 | Step 2 CK | Step 3 |
+|---|---|---|---|
+| Dashboard title | Basic Sciences | Clinical Knowledge | Clinical Management |
+| Content areas | 9 organ systems (USMLE weights) | IM, Surgery, OB/GYN, Peds, Psych | Ambulatory, Emergency, Biostats |
+| Resource stack | First Aid, Pathoma, Sketchy, AnKing | OnlineMedEd, Case Files, AMBOSS CK | Kaplan Step 3, Master the Boards |
 
----
+### 🎯 Practice Question Bank
+High-yield USMLE Step 1-style clinical vignette questions.
 
-### Slideshow Mode
-When it's time to drill, switch to **Slideshow Mode** for any category.
+- **60+ clinical vignettes** across all 9 organ systems, organized into 3 blocks of 20
+- **Block selector** — practice Full Test, Block 1, Block 2, or Block 3
+- **Full quiz flow** — click answer → instant reveal with correct/wrong color coding
+- **Teaching point** for every question — concise, high-yield explanations
+- **Results screen** — score circle (Excellent / Passing / Borderline / Needs Work), per-system performance bars
+- **Review mode** — step through every question with answers and teaching points shown
+- Session scores auto-saved to the Score Tracker as `Free120` entries
 
-- Full-screen, distraction-free card review
-- Navigate with **arrow keys**, **on-screen buttons**, or **swipe gestures** on mobile
-- Progress bar shows where you are in the deck
-- Flag or edit cards without leaving the slideshow
-- Great for last-minute review before an exam block
+### 📊 Score Tracker
+Log every practice assessment and visualize your trend.
 
----
+| Score Type | What It Tracks |
+|---|---|
+| NBME CBSSA | Forms 25–32 |
+| UWSA | UWSA 1, UWSA 2 |
+| UWorld | Block % correct |
+| Free 120 | Practice session scores |
+| Other | Any custom assessment |
 
-### Add Your Own Content
-Pre-loaded content is just the starting point. MedReview is your personal notebook.
+- SVG trend chart with a target score line
+- Table with date, type, score, and notes
+- Delete individual entries
+- Latest score shown on the dashboard with gap-to-target indicator
 
-- **Add cards** to any existing category
-- **Create new categories** with a custom name and icon
-- **Edit any card** at any time — your edits are saved instantly
-- **Delete cards or categories** you don't need
-- Everything you add is yours, stored privately on your device
+### 🗓️ Study Schedule Generator
+Enter your exam date, select 4–12 dedicated weeks, and get a phase-by-phase plan.
 
----
+| Phase | Focus |
+|---|---|
+| Foundation | Pathoma + First Aid baseline coverage |
+| Integration | UWorld first pass + Sketchy |
+| Drilling | UWorld second pass, weak systems |
+| Consolidation | NBMEs, Free 120, final review |
 
-### Global Search
-Can't remember which category a topic lives in? Just search.
+### 📚 Rich Flashcard System
+Pre-loaded with curated high-yield cards organized by the 9 official USMLE Step 1 organ systems.
 
-- Searches across **all steps, all categories, all cards** simultaneously
-- Highlights matching terms in search results
-- Click any result to jump directly to that card and open it for editing
+| System | Exam Weight |
+|---|---|
+| Reproductive & Endocrine | 12–16% |
+| Respiratory & Renal | 11–15% |
+| Behavioral Health & Nervous | 10–14% |
+| Blood & Lymphoreticular/Immune | 9–13% |
+| Musculoskeletal & Skin | 8–12% |
+| Multisystem Processes | 8–12% |
+| Cardiovascular | 7–11% |
+| Gastrointestinal | 6–10% |
+| Human Development | 1–3% |
 
----
-
-### Offline First — No Internet Required
-MedReview is a local web app. Everything runs in your browser with zero server calls.
-
-- Works on a plane, in the hospital, in the library basement with no WiFi
-- No account creation, no email, no password
-- Your data never leaves your device
-
----
-
-### Backup & Restore
-Study on multiple devices? Switching computers? Moving from laptop to tablet?
-
-- **Export** your entire library — cards, highlights, categories, and all — as a single `.json` file in one click
-- **Import** that file on any other device to restore everything exactly as you left it
-- Human-readable backup format you can archive or version however you like
-- Backup before big edits as your own "undo" safety net
-
----
-
-### Dark Mode
-Late-night study sessions are real. Toggle dark mode in one click for a comfortable low-light experience that won't wreck your eyes at 2 AM.
-
----
-
-### Keyboard Shortcuts
-
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl/Cmd + S` | Save current card |
-| `→` / `↓` | Next slide (in slideshow) |
-| `←` / `↑` | Previous slide (in slideshow) |
-| `Esc` | Close slideshow or search |
+- **Rich text editor** — bold, italic, underline, bullet lists, numbered lists
+- **Text highlighting** — select and mark key facts in yellow; highlights persist
+- **Flag cards** for review (🚩) and access them from the dashboard
+- **Slideshow mode** — full-screen active recall with keyboard/swipe navigation
+- **Global search** — searches across all steps, categories, and cards simultaneously
+- **Subcategory summaries** — editable overview panel per topic
+- **JSON export/import** — back up your entire library in one click; restore on any device
 
 ---
 
 ## Getting Started
 
-1. **Download or clone** the `medreview` folder to your computer
-2. **Open `index.html`** in Chrome, Safari, Firefox, or Edge
-3. That's it — no installation, no build step, no dependencies
+```bash
+# Option 1: Open directly (Chrome, Safari, Edge, Firefox)
+open medreview/index.html
 
-> **Tip:** Bookmark the local file path in your browser for instant access every time you sit down to study.
+# Option 2: Serve locally (required for Pathoma videos on some browsers)
+cd medreview
+python3 -m http.server 8080
+# then open http://localhost:8080
+```
+
+> **Note for Pathoma:** Video playback requires serving via HTTP (not `file://`) in most browsers due to media MIME type restrictions. Use `python3 -m http.server` or any local server.
+
+---
+
+## File Structure
+
+```
+medreview/
+├── index.html              — app shell (5 views + Pathoma link in nav)
+├── css/
+│   └── styles.css          — full styling, dark mode via [data-theme="dark"]
+├── js/
+│   ├── defaultData.js      — pre-loaded Step 1/2/3 content (v2.0)
+│   ├── store.js            — localStorage state, migrations, all CRUD
+│   ├── ui.js               — dark mode, sidebar, modals, toasts
+│   ├── render.js           — DOM rendering (sidebar, card grid, summaries)
+│   ├── editor.js           — rich text editor + Selection API highlighting
+│   ├── slideshow.js        — fullscreen slideshow with keyboard & swipe
+│   ├── search.js           — real-time global search
+│   ├── io.js               — JSON export / import
+│   ├── dashboard.js        — step-aware Command Center dashboard
+│   ├── tracker.js          — score logging with SVG trend chart
+│   ├── schedule.js         — 4–12-week study schedule generator
+│   ├── practice.js         — 60+ clinical vignette question bank + quiz UI
+│   └── app.js              — entry point, view switching, global step selector
+└── pathoma/
+    ├── index.html          — Pathoma video viewer (self-contained)
+    ├── Pathoma.pdf         — main textbook
+    ├── Slides/             — 20 chapter slide PDFs
+    └── 01–19/              — 19 chapter folders, 117 MP4 videos total
+```
+
+---
+
+## Keyboard Shortcuts
+
+### Main App
+| Shortcut | Action |
+|---|---|
+| `Ctrl/Cmd + S` | Save current card |
+| `→` / `↓` | Next slide (slideshow) |
+| `←` / `↑` | Previous slide (slideshow) |
+| `Esc` | Close slideshow, search, or modal |
+
+### Pathoma Viewer
+| Shortcut | Action |
+|---|---|
+| `→` or `n` | Next video |
+| `←` or `p` | Previous video |
+| `w` | Toggle watched on current video |
+| `Esc` | Close slides modal |
 
 ---
 
 ## Data & Privacy
 
-Your data is **100% local**. MedReview stores everything in your browser's `localStorage` under the key `medreview_data`. Nothing is transmitted anywhere. No analytics. No tracking. No ads.
+Everything is stored locally in your browser's `localStorage` under `medreview_data`. Nothing is transmitted anywhere — no analytics, no tracking, no ads. Pathoma videos and PDFs are read directly from your local filesystem.
 
-To back up or transfer your data, use the **Export** button — it gives you a plain `.json` file you own completely.
-
----
-
-## The Philosophy Behind MedReview
-
-Most study apps are designed to keep you inside them — gamification, streaks, paywalls, "premium" content. That's not what this is.
-
-MedReview is designed to **get out of your way**. Open it, find what you need, review it, close it. The goal is always the same: pass your boards, become a great physician.
-
-The pre-loaded content follows the classic high-yield approach favored by First Aid, Pathoma, Sketchy, and Boards & Beyond — but the tool itself is yours to shape. Add your own mnemonics. Highlight the facts you always forget. Build the card deck that reflects *your* weaknesses, not a generic algorithm's guess.
+To back up: click **↓ Export** for a plain `.json` snapshot. Import it on any other device to restore everything instantly.
 
 ---
 
 ## Technical Details
 
-For the technically curious — MedReview is a single-page web app with no framework dependencies and no build process.
+Pure vanilla JavaScript — no framework, no build tools, no npm. Works via `file://` for the main app; serve via HTTP for Pathoma video playback.
 
-```
-medreview/
-├── index.html          — app shell
-├── css/
-│   └── styles.css      — full styling with CSS custom properties (dark mode)
-└── js/
-    ├── defaultData.js  — pre-loaded Step 1/2/3 content
-    ├── store.js        — localStorage state management
-    ├── ui.js           — dark mode, sidebar, modals, toasts
-    ├── render.js       — DOM rendering (tabs, sidebar, card grid)
-    ├── editor.js       — rich text editor + Selection API highlighting
-    ├── slideshow.js    — fullscreen slideshow with keyboard & swipe
-    ├── search.js       — real-time global search
-    ├── io.js           — JSON export/import
-    └── app.js          — entry point and event wiring
-```
-
-**Browser requirements:** Any modern browser (Chrome 80+, Firefox 75+, Safari 14+, Edge 80+). Requires `localStorage` and `crypto.randomUUID()` support — both universally available in modern browsers.
-
----
-
-## Frequently Asked Questions
-
-**Is this really free?**
-Yes. No hidden costs, no freemium tier, no "pro" version. Free forever.
-
-**Will I lose my data if I clear my browser cache?**
-If you clear `localStorage`, yes. Export a backup first — it takes two seconds. Keep that `.json` file somewhere safe (Google Drive, Dropbox, email to yourself).
-
-**Can I use this on my iPad or phone?**
-Yes. The layout is functional on tablet screens. Swipe gestures work in slideshow mode. A fully responsive mobile layout is on the roadmap.
-
-**Can I share my card deck with a study partner?**
-Yes — export your backup `.json` and send it to them. They import it and instantly have your entire library.
-
-**What if I want to add a whole new subject or system?**
-Right-click any category in the sidebar to rename it, or use the **＋** button to add a new category with a custom name and emoji icon.
-
-**Does this replace Anki or Sketchy?**
-It's a complement, not a replacement. Use Sketchy for encoding, Anki for pure repetition volume, and MedReview for **annotated reference cards** — the cards you build from your weaknesses, flag for re-review, and flip through the night before an exam block.
-
----
-
-## Roadmap
-
-- [ ] Spaced repetition scheduling (SM-2 algorithm)
-- [ ] Mobile-responsive layout
-- [ ] Export deck as PDF for printing
-- [ ] Import Anki `.apkg` decks
-- [ ] Image support in cards
-- [ ] Per-category progress tracking
-- [ ] Timed quiz mode with score history
+**Browser requirements:** Chrome 80+, Firefox 75+, Safari 14+, Edge 80+. Requires `localStorage` and `crypto.randomUUID()`.
 
 ---
 
 ## License
 
-MIT License — free to use, modify, and distribute. Attribution appreciated but not required.
+MIT — free to use, modify, and distribute.
 
 ---
 

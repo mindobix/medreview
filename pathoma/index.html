@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pathoma — Video Viewer</title>
+  <style>
+    :root {
+      --bg:        #0d1117;
+      --surface:   #161b22;
+      --surface2:  #1c2330;
+      --surface3:  #21262d;
+      --border:    #30363d;
+      --text:      #e6edf3;
+      --muted:     #8b949e;
+      --accent:    #58a6ff;
+      --accent2:   #79c0ff;
+      --green:     #3fb950;
+      --warn:      #d29922;
+      --red:       #f85149;
+      --radius:    8px;
+      --nav-h:     56px;
+      --sidebar-w: 290px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; overflow: hidden; }
+
+    /* ── TOP NAV ──────────────────────────────────────────────────── */
+    #top-nav {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h);
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 0; z-index: 100;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 20px; height: 100%; border-right: 1px solid var(--border);
+      flex-shrink: 0; min-width: 180px;
+    }
+    .nav-brand-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      display: flex; align-items: center; justify-content: center; font-size: 16px;
+    }
+    .nav-brand-text { font-weight: 700; font-size: 1rem; color: var(--text); }
+    .nav-brand-sub  { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+    /* Chapter pills scroll area */
+    .nav-chapters {
+      flex: 1; display: flex; align-items: center; gap: 4px;
+      overflow-x: auto; padding: 0 16px; height: 100%;
+      scrollbar-width: none;
+    }
+    .nav-chapters::-webkit-scrollbar { display: none; }
+
+    .ch-pill {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 6px; cursor: pointer;
+      border: 1px solid transparent; white-space: nowrap; flex-shrink: 0;
+      transition: background .15s, border-color .15s; background: transparent;
+      color: var(--muted); font-size: 12px; font-weight: 600;
+    }
+    .ch-pill:hover { background: var(--surface3); color: var(--text); }
+    .ch-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .ch-pill.done   { color: var(--green); }
+    .ch-pill.done.active { background: var(--green); color: #000; border-color: var(--green); }
+    .ch-num { font-weight: 800; font-size: 11px; opacity: .7; }
+    .ch-done-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+    /* Nav right */
+    .nav-right {
+      display: flex; align-items: center; gap: 8px;
+      padding: 0 16px; border-left: 1px solid var(--border); flex-shrink: 0;
+    }
+    .nav-progress-wrap { text-align: right; }
+    .nav-progress-frac { font-weight: 700; color: var(--text); font-size: .875rem; }
+    .nav-progress-label { font-size: 10px; color: var(--muted); }
+    .nav-progress-bar-outer { width: 100px; height: 4px; background: var(--border); border-radius: 2px; margin-top: 4px; }
+    .nav-progress-bar-fill  { height: 100%; border-radius: 2px; background: var(--green); transition: width .4s; }
+
+    .btn-pdf {
+      padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--surface3); color: var(--text); cursor: pointer; font-size: 12px;
+      font-weight: 600; text-decoration: none; white-space: nowrap;
+      transition: border-color .15s, background .15s;
+    }
+    .btn-pdf:hover { border-color: var(--accent); background: var(--surface2); }
+
+    /* ── MAIN LAYOUT ──────────────────────────────────────────────── */
+    #main {
+      display: flex; position: fixed;
+      top: var(--nav-h); left: 0; right: 0; bottom: 0;
+    }
+
+    /* ── SIDEBAR ──────────────────────────────────────────────────── */
+    #sidebar {
+      width: var(--sidebar-w); flex-shrink: 0;
+      background: var(--surface); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .sidebar-header {
+      padding: 14px 16px 10px; border-bottom: 1px solid var(--border);
+    }
+    .sidebar-ch-title { font-weight: 700; font-size: .9rem; color: var(--text); line-height: 1.3; margin-bottom: 6px; }
+    .sidebar-ch-meta  { font-size: 11px; color: var(--muted); display: flex; align-items: center; justify-content: space-between; }
+    .sidebar-ch-prog  { font-size: 11px; color: var(--green); font-weight: 600; }
+    .sidebar-ch-slides { font-size: 11px; color: var(--accent); cursor: pointer; text-decoration: none; }
+    .sidebar-ch-slides:hover { color: var(--accent2); }
+
+    .sidebar-ch-progress-bar { height: 3px; background: var(--border); margin: 8px 0 0; border-radius: 2px; }
+    .sidebar-ch-progress-fill { height: 100%; border-radius: 2px; background: var(--green); transition: width .3s; }
+
+    #video-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+    #video-list::-webkit-scrollbar { width: 4px; }
+    #video-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .video-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 16px; cursor: pointer;
+      transition: background .12s; border-left: 3px solid transparent;
+    }
+    .video-item:hover { background: var(--surface2); }
+    .video-item.playing {
+      background: rgba(88,166,255,.1);
+      border-left-color: var(--accent);
+    }
+    .video-item.watched { opacity: .65; }
+    .video-item.playing.watched { opacity: 1; }
+
+    .vi-check {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid var(--border); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; transition: all .15s; cursor: pointer;
+    }
+    .vi-check.done { background: var(--green); border-color: var(--green); color: #000; }
+    .vi-check:hover { border-color: var(--green); }
+
+    .vi-body { flex: 1; min-width: 0; }
+    .vi-id    { font-size: 10px; color: var(--muted); font-weight: 700; margin-bottom: 1px; }
+    .vi-title { font-size: .8125rem; color: var(--text); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .video-item.playing .vi-title { color: var(--accent2); font-weight: 600; }
+
+    .vi-play {
+      width: 22px; height: 22px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: var(--muted);
+    }
+    .video-item.playing .vi-play { color: var(--accent); }
+
+    /* ── VIDEO AREA ───────────────────────────────────────────────── */
+    #video-area {
+      flex: 1; display: flex; flex-direction: column; background: #000; overflow: hidden;
+    }
+
+    #video-player-wrap {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      background: #000; position: relative; min-height: 0;
+    }
+    #video-player {
+      width: 100%; height: 100%;
+      max-width: 100%; max-height: 100%;
+      display: block; object-fit: contain;
+    }
+    #video-placeholder {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 16px; color: var(--muted); text-align: center; padding: 40px;
+    }
+    .placeholder-icon { font-size: 64px; opacity: .3; }
+    .placeholder-title { font-size: 1.25rem; font-weight: 700; color: var(--text); }
+    .placeholder-sub   { font-size: .875rem; color: var(--muted); max-width: 400px; line-height: 1.6; }
+
+    /* Video info bar */
+    #video-info-bar {
+      padding: 10px 20px; background: var(--surface); border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 16px; flex-shrink: 0;
+    }
+    .vib-title { font-weight: 700; font-size: .9375rem; color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .vib-chapter { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .vib-nav { display: flex; gap: 8px; flex-shrink: 0; }
+
+    .btn-nav {
+      padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--surface3); color: var(--text); cursor: pointer;
+      font-size: 12px; font-weight: 600; transition: all .15s;
+    }
+    .btn-nav:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .btn-nav:disabled { opacity: .35; cursor: default; }
+    .btn-nav-next { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn-nav-next:hover:not(:disabled) { background: var(--accent2); border-color: var(--accent2); color: #000; }
+
+    .btn-mark-watched {
+      padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--surface3); color: var(--muted); cursor: pointer;
+      font-size: 12px; font-weight: 600; transition: all .15s; flex-shrink: 0;
+    }
+    .btn-mark-watched:hover { border-color: var(--green); color: var(--green); }
+    .btn-mark-watched.watched { background: rgba(63,185,80,.15); border-color: var(--green); color: var(--green); }
+
+    /* ── SLIDES MODAL ─────────────────────────────────────────────── */
+    #modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.7);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200; padding: 24px;
+    }
+    #modal-overlay.hidden { display: none; }
+    #modal-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; width: 100%; max-width: 480px;
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-header h3 { font-size: 1rem; font-weight: 700; }
+    .modal-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; padding: 2px 8px; }
+    .modal-close:hover { color: var(--text); }
+    .modal-body { padding: 12px 8px; max-height: 70vh; overflow-y: auto; }
+    .slide-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px; border-radius: 6px; cursor: pointer;
+      text-decoration: none; color: var(--text); transition: background .12s;
+    }
+    .slide-item:hover { background: var(--surface3); }
+    .slide-icon { font-size: 20px; flex-shrink: 0; }
+    .slide-name { font-size: .875rem; font-weight: 600; }
+    .slide-open { font-size: 11px; color: var(--accent); margin-left: auto; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+<!-- ── TOP NAV ───────────────────────────────────────────────────── -->
+<nav id="top-nav">
+  <div class="nav-brand">
+    <div class="nav-brand-icon">🔬</div>
+    <div>
+      <div class="nav-brand-text">Pathoma</div>
+      <div class="nav-brand-sub">Dr. Husain A. Sattar</div>
+    </div>
+  </div>
+
+  <div class="nav-chapters" id="nav-chapters">
+    <!-- Filled by JS -->
+  </div>
+
+  <div class="nav-right">
+    <div class="nav-progress-wrap">
+      <div class="nav-progress-frac" id="nav-frac">0 / 117</div>
+      <div class="nav-progress-label">videos watched</div>
+      <div class="nav-progress-bar-outer">
+        <div class="nav-progress-bar-fill" id="nav-prog-fill" style="width:0%"></div>
+      </div>
+    </div>
+    <button class="btn-pdf" id="btn-slides-lib">📑 Slides</button>
+    <a class="btn-pdf" href="Pathoma.pdf" target="_blank">📖 Book PDF</a>
+  </div>
+</nav>
+
+<!-- ── MAIN ──────────────────────────────────────────────────────── -->
+<div id="main">
+
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-ch-title" id="sb-ch-title">Select a chapter to begin</div>
+      <div class="sidebar-ch-meta">
+        <span class="sidebar-ch-prog" id="sb-ch-prog"></span>
+        <a class="sidebar-ch-slides" id="sb-ch-slides" href="#" style="display:none">📑 Chapter Slides</a>
+      </div>
+      <div class="sidebar-ch-progress-bar">
+        <div class="sidebar-ch-progress-fill" id="sb-ch-prog-fill" style="width:0%"></div>
+      </div>
+    </div>
+    <div id="video-list"></div>
+  </aside>
+
+  <!-- Video area -->
+  <div id="video-area">
+    <div id="video-player-wrap">
+      <div id="video-placeholder">
+        <div class="placeholder-icon">🎬</div>
+        <div class="placeholder-title">Pathoma Video Viewer</div>
+        <div class="placeholder-sub">Select a chapter from the top nav, then click any video in the sidebar to start watching. Your progress is saved automatically.</div>
+      </div>
+      <video id="video-player" controls style="display:none"></video>
+    </div>
+
+    <div id="video-info-bar">
+      <div>
+        <div class="vib-title" id="vib-title">—</div>
+        <div class="vib-chapter" id="vib-chapter"></div>
+      </div>
+      <button class="btn-mark-watched" id="btn-watched">✓ Mark Watched</button>
+      <div class="vib-nav">
+        <button class="btn-nav" id="btn-prev" disabled>‹ Prev</button>
+        <button class="btn-nav btn-nav-next" id="btn-next" disabled>Next ›</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── SLIDES MODAL ───────────────────────────────────────────────── -->
+<div id="modal-overlay" class="hidden">
+  <div id="modal-box">
+    <div class="modal-header">
+      <h3>📑 Chapter Slide PDFs</h3>
+      <button class="modal-close" id="modal-close">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+/* ── Chapter / video data ─────────────────────────────────────────── */
+const CHAPTERS = [
+  {
+    num: 1,
+    folder: '01. Growth Adaptations, Cellular Injury, and Cell Death',
+    title: 'Cell Injury & Adaptations',
+    short: 'Cell Injury',
+    slides: 'Slides/Chapter 1 Cell Injury.pdf',
+    videos: [
+      { id:'1.1', title:'Growth Adaptations' },
+      { id:'1.2', title:'Cellular Injury' },
+      { id:'1.3', title:'Cell Death' },
+      { id:'1.4', title:'Free Radical Injury' },
+      { id:'1.5', title:'Amyloidosis' },
+    ]
+  },
+  {
+    num: 2,
+    folder: '02. Inflammation, Inflammatory Disorders, and Healing',
+    title: 'Inflammation & Healing',
+    short: 'Inflammation',
+    slides: 'Slides/Chapter 2 Inflammation and Repair.pdf',
+    videos: [
+      { id:'2.1a', title:'Acute Inflammation' },
+      { id:'2.1b', title:'Acute Inflammation (cont.)' },
+      { id:'2.1c', title:'Acute Inflammation (cont.)' },
+      { id:'2.2',  title:'Chronic Inflammation' },
+      { id:'2.3',  title:'Primary Immunodeficiency' },
+      { id:'2.4a', title:'Autoimmune Disorders' },
+      { id:'2.4b', title:'Autoimmune Disorders (cont.)' },
+      { id:'2.5',  title:'Wound Healing' },
+    ]
+  },
+  {
+    num: 3,
+    folder: '03. Principles of Neoplasia',
+    title: 'Principles of Neoplasia',
+    short: 'Neoplasia',
+    slides: 'Slides/Chapter 4 Neoplasia.pdf',
+    videos: [
+      { id:'3.1',  title:'Neoplasia' },
+      { id:'3.2a', title:'Carcinogenesis' },
+      { id:'3.2b', title:'Carcinogenesis (cont.)' },
+      { id:'3.2c', title:'Carcinogenesis (cont.)' },
+      { id:'3.3',  title:'Tumor Progression' },
+      { id:'3.4',  title:'Clinical Characteristics' },
+    ]
+  },
+  {
+    num: 4,
+    folder: '04 - Hemostasis and Related Disorders',
+    title: 'Hemostasis & Disorders',
+    short: 'Hemostasis',
+    slides: 'Slides/Chapter 8 Hemodynamics.pdf',
+    videos: [
+      { id:'4.1', title:'Primary Hemostasis' },
+      { id:'4.2', title:'Secondary Hemostasis' },
+      { id:'4.3', title:'Other Disorders' },
+      { id:'4.4', title:'Thrombosis' },
+      { id:'4.5', title:'Embolism' },
+    ]
+  },
+  {
+    num: 5,
+    folder: '05. Red Blood Cell Disorders',
+    title: 'Red Blood Cell Disorders',
+    short: 'RBC',
+    slides: 'Slides/Chapter 12 Hematopathology.pdf',
+    videos: [
+      { id:'5.1',  title:'Anemia' },
+      { id:'5.2a', title:'Microcytic Anemias' },
+      { id:'5.2b', title:'Microcytic Anemias (cont.)' },
+      { id:'5.2c', title:'Microcytic Anemias (cont.)' },
+      { id:'5.3',  title:'Macrocytic Anemia' },
+      { id:'5.4',  title:'Normocytic Anemia' },
+      { id:'5.5',  title:'Normocytic — Extravascular Hemolysis' },
+      { id:'5.6-5.7', title:'Normocytic — Intravascular / Underproduction' },
+    ]
+  },
+  {
+    num: 6,
+    folder: '06. White Blood Cell Disorders',
+    title: 'White Blood Cell Disorders',
+    short: 'WBC',
+    slides: 'Slides/Chapter 12 Hematopathology.pdf',
+    videos: [
+      { id:'6.1',   title:'Leukopenia & Leukocytosis' },
+      { id:'6.2',   title:'Acute Leukemia' },
+      { id:'6.3',   title:'Chronic Leukemia' },
+      { id:'6.4',   title:'Myeloproliferative Disorders' },
+      { id:'6.5-6.7', title:'LAD, Lymphoma & Hodgkin Lymphoma' },
+      { id:'6.8-6.9', title:'Plasma Cell Disorders' },
+    ]
+  },
+  {
+    num: 7,
+    folder: '07. Vascular Pathology',
+    title: 'Vascular Pathology',
+    short: 'Vascular',
+    slides: 'Slides/Chapter 9 Vascular Pathology.pdf',
+    videos: [
+      { id:'7.1', title:'Vasculitis' },
+      { id:'7.2', title:'Hypertension' },
+      { id:'7.3', title:'Atherosclerosis' },
+      { id:'7.4', title:'Aortic Dissection & Aneurysm' },
+      { id:'7.5', title:'Vascular Tumors' },
+    ]
+  },
+  {
+    num: 8,
+    folder: '08. Cardiac Pathology',
+    title: 'Cardiac Pathology',
+    short: 'Cardiac',
+    slides: 'Slides/Chapter 10 Cardiac Pathology.pdf',
+    videos: [
+      { id:'8.1',   title:'Ischemic Heart Disease' },
+      { id:'8.2',   title:'Congestive Heart Failure' },
+      { id:'8.3',   title:'Congenital Defects' },
+      { id:'8.4',   title:'Valvular Disorders' },
+      { id:'8.5',   title:'Endocarditis' },
+      { id:'8.6-8.7', title:'Cardiomyopathy & Cardiac Tumors' },
+    ]
+  },
+  {
+    num: 9,
+    folder: '09. Respiratory Tract Pathology',
+    title: 'Respiratory Tract',
+    short: 'Respiratory',
+    slides: 'Slides/Chapter 13 Pulmonar Pathology.pdf',
+    videos: [
+      { id:'9.1-9.2', title:'Nasopharynx & Larynx' },
+      { id:'9.3',    title:'Pulmonary Infections' },
+      { id:'9.4',    title:'COPD' },
+      { id:'9.5',    title:'Restrictive Diseases' },
+      { id:'9.6-9.7', title:'Pulmonary HTN & Respiratory Distress' },
+      { id:'9.8',    title:'Lung Cancer' },
+      { id:'9.9',    title:'Pleura' },
+    ]
+  },
+  {
+    num: 10,
+    folder: '10. Gastrointestinal Pathology',
+    title: 'Gastrointestinal Pathology',
+    short: 'GI',
+    slides: 'Slides/Chapter 14 Gastrointestinal Pathology.pdf',
+    videos: [
+      { id:'10.1',   title:'Oral Cavity' },
+      { id:'10.2',   title:'Salivary Gland' },
+      { id:'10.3',   title:'Esophagus' },
+      { id:'10.4',   title:'Stomach' },
+      { id:'10.5',   title:'Small Bowel' },
+      { id:'10.6-10.7', title:'Appendix & Inflammatory Bowel Disease' },
+      { id:'10.8a',  title:'Colon' },
+      { id:'10.8b',  title:'Colorectal Carcinoma' },
+    ]
+  },
+  {
+    num: 11,
+    folder: '11. Exocrine Pancreas, Gallbladder, and Liver Pathology',
+    title: 'Pancreas, Gallbladder & Liver',
+    short: 'Liver / GI',
+    slides: 'Slides/Chapter 15 Liver, Gallbladder and Pancreas.pdf',
+    videos: [
+      { id:'11.1',  title:'Exocrine Pancreas' },
+      { id:'11.2',  title:'Gallbladder & Biliary Tract' },
+      { id:'11.3a', title:'Liver' },
+      { id:'11.3b', title:'Liver (cont.)' },
+      { id:'11.3c', title:'Liver (cont.)' },
+    ]
+  },
+  {
+    num: 12,
+    folder: '12. Kidney and Urinary Tract Pathology',
+    title: 'Kidney & Urinary Tract',
+    short: 'Renal',
+    slides: 'Slides/Chapter 16 Kidney and Bladder.pdf',
+    videos: [
+      { id:'12.1',     title:'Congenital' },
+      { id:'12.2',     title:'Acute Renal Failure' },
+      { id:'12.3',     title:'Nephrotic Syndrome' },
+      { id:'12.4',     title:'Nephritic Syndrome' },
+      { id:'12.5-12.7', title:'UTI, Nephrolithiasis & Chronic Renal Failure' },
+      { id:'12.8',     title:'Renal Neoplasia' },
+      { id:'12.9',     title:'Lower Urinary Tract Carcinoma' },
+    ]
+  },
+  {
+    num: 13,
+    folder: '13. Female Genital System and Gestational Pathology',
+    title: 'Female Genital & Gestational',
+    short: 'Female GU',
+    slides: 'Slides/Chapter 17 Reproductive Tract.pdf',
+    videos: [
+      { id:'13.1', title:'Vulva' },
+      { id:'13.2', title:'Vagina' },
+      { id:'13.3', title:'Cervix' },
+      { id:'13.4', title:'Endometrium & Myometrium' },
+      { id:'13.5', title:'Ovary' },
+      { id:'13.6', title:'Ovarian Tumors' },
+      { id:'13.7', title:'Gestational Pathology' },
+    ]
+  },
+  {
+    num: 14,
+    folder: '14. Male Genital System Pathology',
+    title: 'Male Genital System',
+    short: 'Male GU',
+    slides: 'Slides/Chapter 17 Reproductive Tract.pdf',
+    videos: [
+      { id:'14.1', title:'Penis' },
+      { id:'14.2', title:'Testicle' },
+      { id:'14.3', title:'Testicular Tumors' },
+      { id:'14.4', title:'Prostate' },
+    ]
+  },
+  {
+    num: 15,
+    folder: '15. Endocrine Pathology',
+    title: 'Endocrine Pathology',
+    short: 'Endocrine',
+    slides: 'Slides/Chapter 18 Endocrine Pathology.pdf',
+    videos: [
+      { id:'15.1-15.2', title:'Anterior & Posterior Pituitary' },
+      { id:'15.3-15.7', title:'Thyroid Gland' },
+      { id:'15.8',      title:'Parathyroid Gland' },
+      { id:'15.9',      title:'Endocrine Pancreas' },
+      { id:'15.10-15.11', title:'Adrenal Cortex & Medulla' },
+    ]
+  },
+  {
+    num: 16,
+    folder: '16. Breast Pathology',
+    title: 'Breast Pathology',
+    short: 'Breast',
+    slides: null,
+    videos: [
+      { id:'16.1', title:'Introduction' },
+      { id:'16.2', title:'Inflammatory Conditions' },
+      { id:'16.3', title:'Benign Tumors & Fibrocystic Changes' },
+      { id:'16.4', title:'Breast Cancer' },
+    ]
+  },
+  {
+    num: 17,
+    folder: '17. Central Nervous System Pathology',
+    title: 'CNS Pathology',
+    short: 'CNS',
+    slides: 'Slides/Chapter 11 Neuropathology.pdf',
+    videos: [
+      { id:'17.1',   title:'Developmental Anomalies' },
+      { id:'17.2',   title:'Spinal Cord Lesions' },
+      { id:'17.3',   title:'Meningitis' },
+      { id:'17.4',   title:'Cerebrovascular Disease' },
+      { id:'17.5-17.6', title:'Trauma & Demyelinating Disorders' },
+      { id:'17.7',   title:'Dementia & Degenerative Disorders' },
+      { id:'17.8',   title:'CNS Tumors' },
+    ]
+  },
+  {
+    num: 18,
+    folder: '18. Musculoskeletal Pathology',
+    title: 'Musculoskeletal Pathology',
+    short: 'MSK',
+    slides: 'Slides/Chapter 19 Pathology of the Bones and Joints.pdf',
+    videos: [
+      { id:'18.1', title:'Skeletal System' },
+      { id:'18.2', title:'Bone Tumors' },
+      { id:'18.3', title:'Joints' },
+      { id:'18.4', title:'Skeletal Muscle' },
+    ]
+  },
+  {
+    num: 19,
+    folder: '19. Skin Pathology',
+    title: 'Skin Pathology',
+    short: 'Skin',
+    slides: 'Slides/Chapter 20 Dermopathology.pdf',
+    videos: [
+      { id:'19.1', title:'Inflammatory Dermatoses' },
+      { id:'19.2', title:'Blistering Dermatoses' },
+      { id:'19.3', title:'Epithelial Tumors' },
+      { id:'19.4', title:'Disorders of Pigmentation & Melanocytes' },
+      { id:'19.5', title:'Infectious Disorders' },
+    ]
+  },
+];
+
+const ALL_SLIDES = [
+  'Chapter 1 Cell Injury.pdf',
+  'Chapter 2 Inflammation and Repair.pdf',
+  'Chapter 3 Pathology of the Immune System.pdf',
+  'Chapter 4 Neoplasia.pdf',
+  'Chapter 5 Enviromental and Nutritional Pathology.pdf',
+  'Chapter 6 Genetic Disorders.pdf',
+  'Chapter 7 Pediatric Pathology.pdf',
+  'Chapter 8 Hemodynamics.pdf',
+  'Chapter 9 Vascular Pathology.pdf',
+  'Chapter 10 Cardiac Pathology.pdf',
+  'Chapter 11 Neuropathology.pdf',
+  'Chapter 12 Hematopathology.pdf',
+  'Chapter 13 Pulmonar Pathology.pdf',
+  'Chapter 14 Gastrointestinal Pathology.pdf',
+  'Chapter 15 Liver, Gallbladder and Pancreas.pdf',
+  'Chapter 16 Kidney and Bladder.pdf',
+  'Chapter 17 Reproductive Tract.pdf',
+  'Chapter 18 Endocrine Pathology.pdf',
+  'Chapter 19 Pathology of the Bones and Joints.pdf',
+  'Chapter 20 Dermopathology.pdf',
+];
+
+const TOTAL_VIDEOS = CHAPTERS.reduce((s, c) => s + c.videos.length, 0);
+
+/* ── Build flat video index for prev/next nav ─────────────────────── */
+const FLAT = []; // [{chIdx, vIdx, chapter, video}]
+CHAPTERS.forEach((ch, ci) => {
+  ch.videos.forEach((v, vi) => FLAT.push({ ci, vi, chapter: ch, video: v }));
+});
+
+/* ── State ────────────────────────────────────────────────────────── */
+const LS_KEY = 'pathoma_progress';
+let watched = {};    // key: `${chNum}.${vid.id}` → true
+let activeCh  = null;  // chapter index
+let activeFlat = null; // index into FLAT
+
+function _vidKey(ch, vid) { return `${ch.num}.${vid.id}`; }
+function _isWatched(ch, vid) { return !!watched[_vidKey(ch, vid)]; }
+function _setWatched(ch, vid, val) {
+  watched[_vidKey(ch, vid)] = val;
+  localStorage.setItem(LS_KEY, JSON.stringify(watched));
+}
+function _loadWatched() {
+  try { watched = JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch(e) { watched = {}; }
+}
+
+/* ── Path builder ─────────────────────────────────────────────────── */
+function _videoPath(ch, vid) {
+  // Build path segments, encode each separately so spaces become %20
+  const folder = encodeURIComponent(ch.folder);
+  const filename = encodeURIComponent(vid.id + ' ' + _rawFilename(ch, vid));
+  return folder + '/' + filename + '.mp4';
+}
+
+function _rawFilename(ch, vid) {
+  // The actual filename on disk = `{id} {title}.mp4` with original spacing
+  // Map known compound IDs back to original filenames
+  const overrides = {
+    '5.6-5.7':   '5.6 _ 5.7 Normocytic Anemias with Intravascular Hemolysis _ Anemia due to Underproduction',
+    '6.5-6.7':   '6.5-6.7 LAD, Lymphoma, Hodgkin Lymphoma',
+    '6.8-6.9':   '6.8-6.9 Plasma Cell Disorders',
+    '8.6-8.7':   '8.6 _ 8.7 Cardiomyopathy _ Cardiac Tumors',
+    '9.1-9.2':   '9.1 _ 9.2 Nasopharynx _ Larynx',
+    '9.6-9.7':   '9.6 _ 9.7 Pulmonary Hypertension _ Respiratory Distress Syndromes',
+    '10.6-10.7': '10.6 _ 10.7 Appendix _ Inflammatory Bowel Disease',
+    '12.5-12.7': '12.5 _ 12.6 _ 12.7 Urinary Tract Infection _ Nephrolithiasis _ Chronic Renal Failure',
+    '15.1-15.2': '15.1 _ 15.2 Anterior Pituitary Gland _ Posterior Pituitary Gland',
+    '15.3-15.7': '15.3_15.7 Thyroid Gland',
+    '15.10-15.11':'15.10 _ 15.11 Adrenal Cortex _ Adrenal Medulla',
+    '17.5-17.6': '17.5 _ 17.6 Trauma _ Demyelinating Disorders',
+  };
+  if (overrides[vid.id]) return overrides[vid.id];
+  return null; // use default below
+}
+
+function _buildVideoSrc(ch, vid) {
+  const raw = _rawFilename(ch, vid);
+  if (raw) {
+    return encodeURIComponent(ch.folder) + '/' + encodeURIComponent(raw) + '.mp4';
+  }
+  return encodeURIComponent(ch.folder) + '/' + encodeURIComponent(vid.id + ' ' + vid.title) + '.mp4';
+}
+
+/* ── Render nav pills ─────────────────────────────────────────────── */
+function renderNav() {
+  const container = document.getElementById('nav-chapters');
+  container.innerHTML = CHAPTERS.map((ch, i) => {
+    const watched_count = ch.videos.filter(v => _isWatched(ch, v)).length;
+    const done = watched_count === ch.videos.length;
+    const active = activeCh === i;
+    return `<button class="ch-pill ${active ? 'active' : ''} ${done ? 'done' : ''}" data-chi="${i}">
+      <span class="ch-num">Ch${ch.num}</span>
+      ${ch.short}
+      ${done ? '<span class="ch-done-dot"></span>' : ''}
+    </button>`;
+  }).join('');
+
+  container.querySelectorAll('.ch-pill').forEach(btn => {
+    btn.addEventListener('click', () => selectChapter(parseInt(btn.dataset.chi)));
+  });
+}
+
+/* ── Render sidebar video list ────────────────────────────────────── */
+function renderSidebar() {
+  if (activeCh === null) return;
+  const ch = CHAPTERS[activeCh];
+  const done = ch.videos.filter(v => _isWatched(ch, v)).length;
+  const pct  = Math.round((done / ch.videos.length) * 100);
+
+  document.getElementById('sb-ch-title').textContent = ch.title;
+  document.getElementById('sb-ch-prog').textContent = `${done} / ${ch.videos.length} watched`;
+  document.getElementById('sb-ch-prog-fill').style.width = pct + '%';
+
+  const slidesLink = document.getElementById('sb-ch-slides');
+  if (ch.slides) {
+    slidesLink.style.display = '';
+    slidesLink.href = ch.slides;
+    slidesLink.target = '_blank';
+  } else {
+    slidesLink.style.display = 'none';
+  }
+
+  const list = document.getElementById('video-list');
+  list.innerHTML = ch.videos.map((v, vi) => {
+    const flatIdx = FLAT.findIndex(f => f.ci === activeCh && f.vi === vi);
+    const isPlaying = activeFlat === flatIdx;
+    const isDone = _isWatched(ch, v);
+    return `<div class="video-item ${isPlaying ? 'playing' : ''} ${isDone ? 'watched' : ''}" data-flat="${flatIdx}">
+      <div class="vi-check ${isDone ? 'done' : ''}" data-flat="${flatIdx}" title="${isDone ? 'Mark unwatched' : 'Mark watched'}">
+        ${isDone ? '✓' : ''}
+      </div>
+      <div class="vi-body">
+        <div class="vi-id">${v.id}</div>
+        <div class="vi-title">${v.title}</div>
+      </div>
+      <div class="vi-play">${isPlaying ? '▶' : ''}</div>
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('.video-item').forEach(el => {
+    el.addEventListener('click', (e) => {
+      if (e.target.closest('.vi-check')) return;
+      playVideo(parseInt(el.dataset.flat));
+    });
+  });
+  list.querySelectorAll('.vi-check').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const fi = parseInt(el.dataset.flat);
+      const { chapter, video } = FLAT[fi];
+      _setWatched(chapter, video, !_isWatched(chapter, video));
+      renderAll();
+    });
+  });
+}
+
+/* ── Render global progress ───────────────────────────────────────── */
+function renderProgress() {
+  const done = FLAT.filter(f => _isWatched(f.chapter, f.video)).length;
+  const pct  = Math.round((done / TOTAL_VIDEOS) * 100);
+  document.getElementById('nav-frac').textContent = `${done} / ${TOTAL_VIDEOS}`;
+  document.getElementById('nav-prog-fill').style.width = pct + '%';
+}
+
+function renderAll() {
+  renderNav();
+  renderSidebar();
+  renderProgress();
+  renderInfoBar();
+}
+
+/* ── Select chapter ───────────────────────────────────────────────── */
+function selectChapter(chi) {
+  activeCh = chi;
+  renderAll();
+  // Scroll the selected pill into view
+  const pill = document.querySelectorAll('.ch-pill')[chi];
+  if (pill) pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+
+/* ── Play video ───────────────────────────────────────────────────── */
+function playVideo(flatIdx) {
+  if (flatIdx < 0 || flatIdx >= FLAT.length) return;
+  const { ci, chapter, video } = FLAT[flatIdx];
+
+  activeCh   = ci;
+  activeFlat = flatIdx;
+
+  const player = document.getElementById('video-player');
+  const placeholder = document.getElementById('video-placeholder');
+
+  const src = _buildVideoSrc(chapter, video);
+  player.src = src;
+  player.style.display = 'block';
+  placeholder.style.display = 'none';
+  player.play().catch(() => {});
+
+  // Auto-mark watched when 80% through
+  player.ontimeupdate = () => {
+    if (player.duration && player.currentTime / player.duration > 0.8) {
+      if (!_isWatched(chapter, video)) {
+        _setWatched(chapter, video, true);
+        renderAll();
+      }
+    }
+  };
+
+  // Auto-advance
+  player.onended = () => {
+    _setWatched(chapter, video, true);
+    const next = flatIdx + 1;
+    if (next < FLAT.length && FLAT[next].ci === ci) {
+      setTimeout(() => playVideo(next), 800);
+    } else {
+      renderAll();
+    }
+  };
+
+  renderAll();
+
+  // Scroll active video into view in sidebar
+  setTimeout(() => {
+    const active = document.querySelector('.video-item.playing');
+    if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 50);
+}
+
+/* ── Info bar ─────────────────────────────────────────────────────── */
+function renderInfoBar() {
+  if (activeFlat === null) return;
+  const { chapter, video } = FLAT[activeFlat];
+  document.getElementById('vib-title').textContent = video.id + '  ' + video.title;
+  document.getElementById('vib-chapter').textContent = 'Chapter ' + chapter.num + ' · ' + chapter.title;
+
+  const btnW = document.getElementById('btn-watched');
+  const isW  = _isWatched(chapter, video);
+  btnW.textContent = isW ? '✓ Watched' : '✓ Mark Watched';
+  btnW.classList.toggle('watched', isW);
+
+  document.getElementById('btn-prev').disabled = activeFlat === 0;
+  document.getElementById('btn-next').disabled = activeFlat === FLAT.length - 1;
+}
+
+/* ── Slides modal ─────────────────────────────────────────────────── */
+function openSlidesModal() {
+  const body = document.getElementById('modal-body');
+  body.innerHTML = ALL_SLIDES.map(s => `
+    <a class="slide-item" href="Slides/${encodeURIComponent(s)}" target="_blank">
+      <span class="slide-icon">📄</span>
+      <span class="slide-name">${s.replace('.pdf', '')}</span>
+      <span class="slide-open">Open →</span>
+    </a>
+  `).join('');
+  document.getElementById('modal-overlay').classList.remove('hidden');
+}
+
+/* ── Event bindings ───────────────────────────────────────────────── */
+document.getElementById('btn-prev').addEventListener('click', () => {
+  if (activeFlat > 0) playVideo(activeFlat - 1);
+});
+document.getElementById('btn-next').addEventListener('click', () => {
+  if (activeFlat < FLAT.length - 1) playVideo(activeFlat + 1);
+});
+document.getElementById('btn-watched').addEventListener('click', () => {
+  if (activeFlat === null) return;
+  const { chapter, video } = FLAT[activeFlat];
+  _setWatched(chapter, video, !_isWatched(chapter, video));
+  renderAll();
+});
+
+document.getElementById('btn-slides-lib').addEventListener('click', openSlidesModal);
+document.getElementById('modal-close').addEventListener('click', () => {
+  document.getElementById('modal-overlay').classList.add('hidden');
+});
+document.getElementById('modal-overlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.add('hidden');
+  }
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowRight' || e.key === 'n') {
+    if (activeFlat !== null && activeFlat < FLAT.length - 1) playVideo(activeFlat + 1);
+  } else if (e.key === 'ArrowLeft' || e.key === 'p') {
+    if (activeFlat !== null && activeFlat > 0) playVideo(activeFlat - 1);
+  } else if (e.key === 'w') {
+    if (activeFlat !== null) {
+      const { chapter, video } = FLAT[activeFlat];
+      _setWatched(chapter, video, !_isWatched(chapter, video));
+      renderAll();
+    }
+  } else if (e.key === 'Escape') {
+    document.getElementById('modal-overlay').classList.add('hidden');
+  }
+});
+
+/* ── Init ─────────────────────────────────────────────────────────── */
+_loadWatched();
+renderNav();
+renderProgress();
+</script>
+</body>
+</html>
