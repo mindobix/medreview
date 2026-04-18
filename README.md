@@ -5,9 +5,42 @@
 
 ---
 
+## ⚠️ Content Disclaimer — Bring Your Own Files
+
+MedReview is a **viewer and study tool only**. It does not include, distribute, or host any copyrighted content. You must supply your own legally-obtained copies of all course materials.
+
+**Required files you must provide:**
+
+| File / Folder | What It Is | Where to Place It |
+|---|---|---|
+| `pathoma/Pathoma.pdf` | Pathoma textbook (full book) | `pathoma/Pathoma.pdf` |
+| `pathoma/Slides/` | Chapter slide PDFs (20 files) | `pathoma/Slides/Chapter 1 Cell Injury.pdf`, etc. |
+| `pathoma/book/` | Per-chapter book PDFs for the Book viewer | `pathoma/book/ch1.pdf`, `ch2.pdf` … `ch19.pdf` |
+| `pathoma/worksheets/` | Per-chapter interactive worksheets | `pathoma/worksheets/ch1.html`, `ch2.html` … (you create these) |
+| `pathoma/01. Growth Adaptations.../` | Video files for Chapter 1 | One folder per chapter (see layout below) |
+| `pathoma/02. … /` through `pathoma/19. … /` | Video files for Chapters 2–19 | Same pattern |
+
+**Video filename format** (must match exactly):
+
+```
+pathoma/
+└── 01. Growth Adaptations, Cellular Injury, and Cell Death/
+    ├── 1.1 Growth Adaptations.mp4
+    ├── 1.2 Cellular Injury.mp4
+    ├── 1.3 Cell Death.mp4
+    ├── 1.4 Free Radical Injury.mp4
+    └── 1.5 Amyloidosis.mp4
+```
+
+Each video filename is `{id} {title}.mp4`. The app builds the path automatically — filenames must match the chapter folder names and video titles defined in `pathoma/index.html`.
+
+> **Note:** Some videos that display as "(cont.)" in the UI (e.g. `2.1b Acute Inflammation (cont.)`) have the `(cont.)` stripped when resolving the filename — the actual file on disk should be named without it (e.g. `2.1b Acute Inflammation.mp4`).
+
+---
+
 ## What Is This?
 
-MedReview is a complete study command center that runs entirely in your browser with zero server, zero account, and zero subscription. It covers the full pipeline: watch Pathoma videos → review high-yield flashcards → practice clinical vignettes → track your NBME/UWorld scores → generate a week-by-week study plan.
+MedReview is a complete study command center that runs entirely in your browser with zero server, zero account, and zero subscription. It covers the full pipeline: watch Pathoma videos → review high-yield cue cards → practice clinical vignettes → track your NBME/UWorld scores → generate a week-by-week study plan.
 
 Switch between Step 1, Step 2 CK, and Step 3 in one click. Everything — dashboard content, organ system weights, resources, and scheduled topics — adapts instantly.
 
@@ -25,32 +58,51 @@ Switch between Step 1, Step 2 CK, and Step 3 in one click. Everything — dashbo
 
 ## Features
 
-### 🔬 Pathoma Video Viewer
+### 🔬 Pathoma Video Viewer (`pathoma/index.html`)
+
 A dedicated viewer for all 19 Pathoma chapters (117 videos total).
 
-- **Full top nav** with all 19 chapter pills — color-coded with green completion dots
-- **Sidebar video list** per chapter with watched/unwatched checkmarks and per-chapter progress bar
-- **HTML5 video player** with auto-advance to the next video in a chapter
+- **Chapter nav bar** — 19 chapter pills with green completion dots
+- **Sub-chapter bar** — per-chapter video pills with per-chapter progress bar
+- **HTML5 video player** with auto-advance to the next video
 - **Auto-mark watched** when you reach 80% through a video
-- **Chapter slide PDFs** linked per chapter; full slides library modal (📑)
-- **Main Pathoma.pdf** one click away in the nav bar
-- **Global progress** tracker showing X / 117 videos watched across all chapters
+- **Left sidebar** with two tabs:
+  - **Slides** — chapter slide PDF embedded inline (custom PDF.js viewer, no thumbnail clutter)
+  - **Book Chapter** — per-chapter book PDF (`pathoma/book/ch{N}.pdf`) embedded inline
+  - Both panels are drag-resizable
+- **Right cue card panel** — pre-loaded high-yield notes for every video, rendered as a rich-text editor:
+  - Edits are auto-saved to `localStorage` and reloaded on next visit
+  - Reset button restores the original pre-written notes
+  - Panel is drag-resizable
+- **My Notes view** — top-nav button opens a full review mode:
+  - **My Edits tab** — only videos you have personally modified, grouped by chapter
+  - **All Notes tab** — all 117 videos with full cue cards, grouped by chapter
+  - Left chapter index panel (480px) with notes count per chapter and live scroll-spy
+  - Every card is editable inline (same auto-save storage)
+  - **▶ Watch** button on each card navigates directly to that video
+- **Worksheets view** — top-nav button opens a per-chapter interactive worksheet viewer:
+  - Left panel lists all 19 chapters — chapters with a worksheet show "Available", others show "Soon"
+  - Clicking an available chapter loads `worksheets/ch{N}.html` in an embedded frame
+  - Each worksheet contains: Study Guide · Flashcards (flip cards) · Practice Questions (vignettes with scoring, missed-question review, topic filtering) · Quick Reference tables
+  - Worksheets are fully styled to match the app (dark theme, system fonts, 1.4rem base)
+  - Add new worksheets by dropping `ch2.html` … `ch19.html` into `pathoma/worksheets/` and adding the chapter number to `WS_AVAILABLE` in `pathoma/index.html`
+- **Global progress** tracker: X / 117 videos watched
 - Keyboard shortcuts: `→`/`n` next, `←`/`p` prev, `w` toggle watched, `Esc` close modal
-- Progress persisted in `localStorage` — never lose your place
+- Progress persisted in `localStorage`
 
 ### 🏠 Step-Aware Dashboard
+
 The Command Center adapts to whichever exam you're preparing for.
 
-- **Exam countdown** with urgency color (green → yellow → red as the date approaches)
+- **Exam countdown** with urgency color (green → yellow → red)
 - **Latest score vs. target** with gap indicator (▲/▼)
-- **System priority bars** weighted by official USMLE exam content percentages
-- **Flagged cards** quick-access list (jump straight to review)
-- **Score trend mini-chart** — all NBME/UWorld/UWSA/Free120 scores plotted over time
-- **Resource stack** — curated books and tools specific to the selected Step
-- One-click navigation from any system bar to its Study Cards
+- **System priority bars** weighted by official USMLE content percentages
+- **Flagged cards** quick-access list
+- **Score trend mini-chart** — all scores plotted over time
+- **Resource stack** — curated for the selected Step
+- One-click navigation from any system bar to Study Cards
 
 ### 🔄 Global Step Selector (Step 1 / Step 2 CK / Step 3)
-A persistent pill selector in the header changes the entire app context:
 
 | What changes | Step 1 | Step 2 CK | Step 3 |
 |---|---|---|---|
@@ -59,80 +111,42 @@ A persistent pill selector in the header changes the entire app context:
 | Resource stack | First Aid, Pathoma, Sketchy, AnKing | OnlineMedEd, Case Files, AMBOSS CK | Kaplan Step 3, Master the Boards |
 
 ### 🎯 Practice Question Bank
-High-yield USMLE Step 1-style clinical vignette questions.
 
-- **60+ clinical vignettes** across all 9 organ systems, organized into 3 blocks of 20
-- **Block selector** — practice Full Test, Block 1, Block 2, or Block 3
-- **Full quiz flow** — click answer → instant reveal with correct/wrong color coding
-- **Teaching point** for every question — concise, high-yield explanations
-- **Results screen** — score circle (Excellent / Passing / Borderline / Needs Work), per-system performance bars
-- **Review mode** — step through every question with answers and teaching points shown
-- Session scores auto-saved to the Score Tracker as `Free120` entries
+- **60+ clinical vignettes** across all 9 organ systems, 3 blocks of 20
+- Full quiz flow with instant reveal and teaching points
+- Results screen with per-system performance bars
+- Session scores auto-saved to the Score Tracker
 
 ### 📊 Score Tracker
-Log every practice assessment and visualize your trend.
 
-| Score Type | What It Tracks |
-|---|---|
-| NBME CBSSA | Forms 25–32 |
-| UWSA | UWSA 1, UWSA 2 |
-| UWorld | Block % correct |
-| Free 120 | Practice session scores |
-| Other | Any custom assessment |
-
-- SVG trend chart with a target score line
-- Table with date, type, score, and notes
-- Delete individual entries
-- Latest score shown on the dashboard with gap-to-target indicator
+Log every practice assessment and visualize your trend (NBME CBSSA, UWSA, UWorld, Free 120, custom).
 
 ### 🗓️ Study Schedule Generator
-Enter your exam date, select 4–12 dedicated weeks, and get a phase-by-phase plan.
 
-| Phase | Focus |
-|---|---|
-| Foundation | Pathoma + First Aid baseline coverage |
-| Integration | UWorld first pass + Sketchy |
-| Drilling | UWorld second pass, weak systems |
-| Consolidation | NBMEs, Free 120, final review |
+Enter your exam date, select 4–12 dedicated weeks, get a phase-by-phase plan (Foundation → Integration → Drilling → Consolidation).
 
 ### 📚 Rich Flashcard System
-Pre-loaded with curated high-yield cards organized by the 9 official USMLE Step 1 organ systems.
 
-| System | Exam Weight |
-|---|---|
-| Reproductive & Endocrine | 12–16% |
-| Respiratory & Renal | 11–15% |
-| Behavioral Health & Nervous | 10–14% |
-| Blood & Lymphoreticular/Immune | 9–13% |
-| Musculoskeletal & Skin | 8–12% |
-| Multisystem Processes | 8–12% |
-| Cardiovascular | 7–11% |
-| Gastrointestinal | 6–10% |
-| Human Development | 1–3% |
-
-- **Rich text editor** — bold, italic, underline, bullet lists, numbered lists
-- **Text highlighting** — select and mark key facts in yellow; highlights persist
-- **Flag cards** for review (🚩) and access them from the dashboard
-- **Slideshow mode** — full-screen active recall with keyboard/swipe navigation
-- **Global search** — searches across all steps, categories, and cards simultaneously
-- **Subcategory summaries** — editable overview panel per topic
-- **JSON export/import** — back up your entire library in one click; restore on any device
+Pre-loaded high-yield cards across all 9 Step 1 organ systems with rich text editor, text highlighting, flag system, slideshow mode, global search, and JSON export/import.
 
 ---
 
 ## Getting Started
 
 ```bash
-# Option 1: Open directly (Chrome, Safari, Edge, Firefox)
+# Option 1: Open the main app directly (Chrome, Safari, Edge, Firefox)
 open medreview/index.html
 
-# Option 2: Serve locally (required for Pathoma videos on some browsers)
+# Option 2: Local HTTP server — required for Pathoma videos and PDF viewer
 cd medreview
 python3 -m http.server 8080
 # then open http://localhost:8080
+# Pathoma viewer: http://localhost:8080/pathoma/
 ```
 
-> **Note for Pathoma:** Video playback requires serving via HTTP (not `file://`) in most browsers due to media MIME type restrictions. Use `python3 -m http.server` or any local server.
+> **Why HTTP?** The Pathoma module uses a custom PDF.js viewer (`pathoma/pdfviewer.html`) that loads PDFs via `fetch()`. Browsers block cross-origin `fetch()` from `file://` URLs. Serving via `http://localhost` removes this restriction and enables the no-thumbnail PDF viewer. Videos also benefit from proper MIME type handling over HTTP.
+>
+> The app still works on `file://` — PDFs fall back to Chrome's native viewer automatically — but HTTP gives the best experience.
 
 ---
 
@@ -140,28 +154,44 @@ python3 -m http.server 8080
 
 ```
 medreview/
-├── index.html              — app shell (5 views + Pathoma link in nav)
+├── index.html                  — main app shell (dashboard, cards, tracker, schedule, practice)
 ├── css/
-│   └── styles.css          — full styling, dark mode via [data-theme="dark"]
+│   └── styles.css
 ├── js/
-│   ├── defaultData.js      — pre-loaded Step 1/2/3 content (v2.0)
-│   ├── store.js            — localStorage state, migrations, all CRUD
-│   ├── ui.js               — dark mode, sidebar, modals, toasts
-│   ├── render.js           — DOM rendering (sidebar, card grid, summaries)
-│   ├── editor.js           — rich text editor + Selection API highlighting
-│   ├── slideshow.js        — fullscreen slideshow with keyboard & swipe
-│   ├── search.js           — real-time global search
-│   ├── io.js               — JSON export / import
-│   ├── dashboard.js        — step-aware Command Center dashboard
-│   ├── tracker.js          — score logging with SVG trend chart
-│   ├── schedule.js         — 4–12-week study schedule generator
-│   ├── practice.js         — 60+ clinical vignette question bank + quiz UI
-│   └── app.js              — entry point, view switching, global step selector
+│   ├── defaultData.js
+│   ├── store.js
+│   ├── ui.js
+│   ├── render.js
+│   ├── editor.js
+│   ├── slideshow.js
+│   ├── search.js
+│   ├── io.js
+│   ├── dashboard.js
+│   ├── tracker.js
+│   ├── schedule.js
+│   ├── practice.js
+│   └── app.js
 └── pathoma/
-    ├── index.html          — Pathoma video viewer (self-contained)
-    ├── Pathoma.pdf         — main textbook
-    ├── Slides/             — 20 chapter slide PDFs
-    └── 01–19/              — 19 chapter folders, 117 MP4 videos total
+    ├── index.html              — Pathoma viewer (self-contained, all logic inline)
+    ├── pdfviewer.html          — custom PDF.js viewer (no thumbnails, dark theme)
+    ├── Pathoma.pdf             ← YOU PROVIDE THIS
+    ├── Slides/                 ← YOU PROVIDE THIS (chapter slide PDFs)
+    │   ├── Chapter 1 Cell Injury.pdf
+    │   ├── Chapter 2 Inflammation.pdf
+    │   └── … (one per chapter)
+    ├── book/                   ← YOU PROVIDE THIS (per-chapter book PDFs)
+    │   ├── ch1.pdf
+    │   ├── ch2.pdf
+    │   └── … ch19.pdf
+    ├── worksheets/             — interactive per-chapter worksheets
+    │   ├── ch1.html            — Chapter 1 (included: study guide, flashcards, 141 vignettes)
+    │   ├── ch2.html            ← ADD AS AVAILABLE (register in WS_AVAILABLE in index.html)
+    │   └── … ch19.html
+    ├── 01. Growth Adaptations, Cellular Injury, and Cell Death/  ← YOU PROVIDE
+    │   ├── 1.1 Growth Adaptations.mp4
+    │   └── …
+    ├── 02. Inflammation/       ← YOU PROVIDE
+    └── … (19 chapter folders total)
 ```
 
 ---
@@ -188,15 +218,21 @@ medreview/
 
 ## Data & Privacy
 
-Everything is stored locally in your browser's `localStorage` under `medreview_data`. Nothing is transmitted anywhere — no analytics, no tracking, no ads. Pathoma videos and PDFs are read directly from your local filesystem.
+Everything is stored locally in your browser's `localStorage`. Nothing is transmitted anywhere — no analytics, no tracking, no ads.
 
-To back up: click **↓ Export** for a plain `.json` snapshot. Import it on any other device to restore everything instantly.
+- Main app data key: `medreview_data`
+- Pathoma watch progress: `pathoma_watched`
+- Pathoma cue card edits: `pathoma_cue_edited`
+- Panel sizes: `pathoma_panel_sizes`
+- Worksheet state (flashcard position, practice scores): stored per-worksheet inside each `ch{N}.html` iframe's own localStorage scope
+
+To back up: click **↓ Export** in the main app for a `.json` snapshot. Import it on any device to restore everything instantly.
 
 ---
 
 ## Technical Details
 
-Pure vanilla JavaScript — no framework, no build tools, no npm. Works via `file://` for the main app; serve via HTTP for Pathoma video playback.
+Pure vanilla JavaScript — no framework, no build tools, no npm. The main app works via `file://`; serve via HTTP for best Pathoma experience.
 
 **Browser requirements:** Chrome 80+, Firefox 75+, Safari 14+, Edge 80+. Requires `localStorage` and `crypto.randomUUID()`.
 
@@ -204,7 +240,7 @@ Pure vanilla JavaScript — no framework, no build tools, no npm. Works via `fil
 
 ## License
 
-MIT — free to use, modify, and distribute.
+MIT — free to use, modify, and distribute. This tool does not include any Pathoma, First Aid, or other copyrighted educational content.
 
 ---
 

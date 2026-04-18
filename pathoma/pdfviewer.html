@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PDF Viewer</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; background: #1a1a1a; color: #d4d4d4; font-family: system-ui, sans-serif; overflow: hidden; }
+body { display: flex; flex-direction: column; }
+
+#toolbar {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 10px; background: #252525; border-bottom: 1px solid #3a3a3a;
+  flex-shrink: 0; min-height: 36px;
+}
+#toolbar button {
+  background: #333; border: 1px solid #444; color: #d4d4d4;
+  padding: 3px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;
+}
+#toolbar button:hover:not(:disabled) { background: #3d3d3d; border-color: #555; }
+#toolbar button:disabled { opacity: .4; cursor: default; }
+#page-display { font-size: 12px; color: #aaa; white-space: nowrap; }
+#page-input { width: 36px; background: #333; border: 1px solid #444; color: #d4d4d4; text-align: center; padding: 2px 4px; border-radius: 4px; font-size: 12px; }
+#zoom-select { background: #333; border: 1px solid #444; color: #d4d4d4; padding: 3px 6px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+.tb-sep { flex: 1; }
+
+#scroll-wrap {
+  flex: 1; overflow-y: auto; overflow-x: auto;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; padding: 14px 10px;
+}
+.page-wrap { box-shadow: 0 3px 12px rgba(0,0,0,.6); }
+.page-wrap canvas { display: block; }
+
+/* Fallback embed fills entire body (no toolbar shown) */
+#fallback-embed {
+  display: none; flex: 1; width: 100%; border: none;
+}
+
+#msg {
+  color: #888; font-size: 13px; margin-top: 40px;
+}
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <button id="btn-prev" disabled>◀</button>
+  <input id="page-input" type="number" min="1" value="1">
+  <span id="page-display">/ —</span>
+  <button id="btn-next" disabled>▶</button>
+  <span class="tb-sep"></span>
+  <select id="zoom-select">
+    <option value="pw">Page Width</option>
+    <option value="0.75">75%</option>
+    <option value="1" selected>100%</option>
+    <option value="1.25">125%</option>
+    <option value="1.5">150%</option>
+    <option value="2">200%</option>
+  </select>
+</div>
+
+<div id="scroll-wrap">
+  <div id="msg">Loading…</div>
+</div>
+
+<!-- shown only when PDF.js fails (file:// protocol) -->
+<embed id="fallback-embed" type="application/pdf">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+'use strict';
+
+const fileUrl  = new URLSearchParams(location.search).get('file');
+const toolbar  = document.getElementById('toolbar');
+const wrap     = document.getElementById('scroll-wrap');
+const msgEl    = document.getElementById('msg');
+const pageIn   = document.getElementById('page-input');
+const pageDis  = document.getElementById('page-display');
+const btnPrev  = document.getElementById('btn-prev');
+const btnNext  = document.getElementById('btn-next');
+const zoomSel  = document.getElementById('zoom-select');
+const fbEmbed  = document.getElementById('fallback-embed');
+
+if (!fileUrl) {
+  msgEl.textContent = 'No file specified.';
+} else {
+  tryPdfJs(fileUrl);
+}
+
+/* ── PDF.js path (HTTP server) ───────────────────────────────────── */
+async function tryPdfJs(url) {
+  if (!window.pdfjsLib) { useFallback(url); return; }
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  let pdf;
+  try {
+    pdf = await pdfjsLib.getDocument(url).promise;
+  } catch (e) {
+    useFallback(url);
+    return;
+  }
+  msgEl.remove();
+  initPdfJsViewer(pdf);
+}
+
+function initPdfJsViewer(pdf) {
+  const canvases = [];
+  pageIn.max = pdf.numPages;
+  pageDis.textContent = '/ ' + pdf.numPages;
+  btnPrev.disabled = false;
+  btnNext.disabled = false;
+
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const box = document.createElement('div');
+    box.className = 'page-wrap'; box.dataset.page = i;
+    const c = document.createElement('canvas');
+    box.appendChild(c);
+    wrap.appendChild(box);
+    canvases.push(c);
+  }
+
+  let renderQ = Promise.resolve();
+
+  function renderAll() {
+    renderQ = renderQ.then(async () => {
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const c   = canvases[i - 1];
+        const v   = zoomSel.value;
+        const sc  = v === 'pw'
+          ? Math.max(0.2, (wrap.clientWidth - 24) / page.getViewport({ scale: 1 }).width)
+          : parseFloat(v);
+        const vp  = page.getViewport({ scale: sc });
+        c.width  = vp.width; c.height = vp.height;
+        c.parentElement.style.cssText = `width:${vp.width}px;height:${vp.height}px`;
+        await page.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
+      }
+    });
+  }
+
+  renderAll();
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) pageIn.value = e.target.dataset.page; });
+  }, { root: wrap, threshold: 0.4 });
+  wrap.querySelectorAll('.page-wrap').forEach(el => obs.observe(el));
+
+  const scrollTo = n => wrap.querySelector(`.page-wrap[data-page="${n}"]`)
+    ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  btnPrev.onclick = () => { const n = Math.max(1, +pageIn.value - 1); pageIn.value = n; scrollTo(n); };
+  btnNext.onclick = () => { const n = Math.min(pdf.numPages, +pageIn.value + 1); pageIn.value = n; scrollTo(n); };
+  pageIn.onchange = () => { const n = Math.min(pdf.numPages, Math.max(1, +pageIn.value || 1)); pageIn.value = n; scrollTo(n); };
+  zoomSel.onchange = renderAll;
+
+  let rzt;
+  window.onresize = () => { clearTimeout(rzt); rzt = setTimeout(() => { if (zoomSel.value === 'pw') renderAll(); }, 150); };
+}
+
+/* ── Native embed fallback (file:// protocol) ────────────────────── */
+function useFallback(url) {
+  toolbar.style.display = 'none';
+  wrap.style.display    = 'none';
+  fbEmbed.src           = url + '#pagemode=none&toolbar=0';
+  fbEmbed.style.display = 'block';
+}
+</script>
+</body>
+</html>
