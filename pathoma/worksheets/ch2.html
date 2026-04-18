@@ -312,7 +312,7 @@
   .option.correct .opt-letter{color:var(--success)}
   .option.incorrect{background:var(--error-bg);border-color:var(--error);border-width:2px;opacity:.75}
   .option.incorrect .opt-letter{color:var(--error)}
-  .explanation{margin-top:18px;padding:18px 22px;background:#ede5d1;border:1px solid var(--rule-dark);border-radius:3px;font-size:.95rem;line-height:1.6;display:none}
+  .explanation{margin-top:18px;padding:18px 22px;background:var(--explanation-bg);border:1px solid var(--rule-dark);border-radius:3px;font-size:.95rem;line-height:1.6;display:none}
   .explanation.show{display:block;animation:fadeIn .3s}
   .explanation-header{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;margin-bottom:10px;color:var(--accent)}
   .explanation strong{color:var(--ink)}
@@ -406,6 +406,20 @@
   em.highlight{background:linear-gradient(180deg,transparent 60%,rgba(88,166,255,.25) 60%);}
   li::marker{color:#58a6ff;}h3.concept::before{color:#58a6ff;}strong{color:#e6edf3;}
   p,li{color:#b1bac4;font-size:1.35rem;}h3.concept{font-size:1.5rem;color:#e6edf3;}h4.sub{font-size:1.35rem;color:#b1bac4;}
+
+  /* Force light text in dark mode for all interactive elements */
+  [data-theme="dark"] .vignette{color:#e6edf3;background:#1c2330;border-left-color:#58a6ff;}
+  [data-theme="dark"] .option{color:#e6edf3;background:#1c2330;border-color:#30363d;}
+  [data-theme="dark"] .option:hover:not(:disabled){background:#21262d;border-color:#58a6ff;}
+  [data-theme="dark"] .flash-q{color:#e6edf3;}
+  [data-theme="dark"] .flash-face{background:#1c2330;border-color:#30363d;}
+  [data-theme="dark"] .flash-face.back{background:#21262d;color:#e6edf3;}
+  [data-theme="dark"] .flash-face.back .flash-q{color:#e6edf3;}
+  [data-theme="dark"] .explanation{background:#1c2330;border-color:#30363d;color:#b1bac4;}
+  [data-theme="dark"] .explanation strong{color:#e6edf3;}
+  [data-theme="dark"] .q-prompt{color:#e6edf3;}
+  [data-theme="dark"] .q-topic{color:#8b949e;}
+  [data-theme="dark"] strong{color:#e6edf3;}
 </style>
 </head>
 <body>
