@@ -3,3 +3,5 @@
 pathoma/*.pdf
 pathoma/Slides/
 pathoma/[0-9]*/
+pathoma/book/*
+pathoma/NBME/
