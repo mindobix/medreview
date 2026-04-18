@@ -2551,7 +2551,7 @@ document.getElementById('modal-overlay').addEventListener('click', (e) => {
 
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
   if (e.key === 'ArrowRight' || e.key === 'n') {
     if (activeFlat !== null && activeFlat < FLAT.length - 1) playVideo(activeFlat + 1);
   } else if (e.key === 'ArrowLeft' || e.key === 'p') {
