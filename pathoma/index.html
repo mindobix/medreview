@@ -2751,11 +2751,9 @@ function loadWorksheet(chNum) {
   renderWsLeft();
   const iframe = document.getElementById('worksheet-iframe');
   const placeholder = document.getElementById('ws-placeholder');
-  const url = `worksheets/ch${chNum}.html`;
-  if (iframe.dataset.src !== url) {
-    iframe.src = url;
-    iframe.dataset.src = url;
-  }
+  const url = `worksheets/ch${chNum}.html?v=${Date.now()}`;
+  iframe.src = url;
+  iframe.dataset.src = url;
   iframe.style.display = 'block';
   placeholder.style.display = 'none';
 }
