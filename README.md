@@ -139,12 +139,14 @@ open medreview/index.html
 
 # Option 2: Local HTTP server — required for Pathoma videos and PDF viewer
 cd medreview
-python3 -m http.server 8080
+python3 serve.py 8080
 # then open http://localhost:8080
 # Pathoma viewer: http://localhost:8080/pathoma/
 ```
 
-> **Why HTTP?** The Pathoma module uses a custom PDF.js viewer (`pathoma/pdfviewer.html`) that loads PDFs via `fetch()`. Browsers block cross-origin `fetch()` from `file://` URLs. Serving via `http://localhost` removes this restriction and enables the no-thumbnail PDF viewer. Videos also benefit from proper MIME type handling over HTTP.
+> **Why `serve.py` and not `python3 -m http.server`?** The stdlib server ignores HTTP `Range` requests, so the browser has to download an entire video before it can play and cannot seek. Short clips tolerate this; longer Pathoma videos (e.g. `9.4 COPD.mp4` at ~38 MB) stall or fail outright — Safari in particular refuses to start playback without `Range`. `serve.py` is a drop-in handler that adds proper `Range` (HTTP 206) support and the same no-cache headers.
+
+> **Why HTTP at all?** The Pathoma module uses a custom PDF.js viewer (`pathoma/pdfviewer.html`) that loads PDFs via `fetch()`. Browsers block cross-origin `fetch()` from `file://` URLs. Serving via `http://localhost` removes this restriction and enables the no-thumbnail PDF viewer.
 >
 > The app still works on `file://` — PDFs fall back to Chrome's native viewer automatically — but HTTP gives the best experience.
 

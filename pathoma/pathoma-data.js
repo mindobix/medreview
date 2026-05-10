@@ -278,8 +278,12 @@ CHAPTERS.forEach((ch, ci) => {
   ch.videos.forEach((v, vi) => FLAT.push({ ci, vi, chapter: ch, video: v }));
 });
 
-/* ── Filename overrides for compound IDs ──────────────────────────── */
+/* ── Filename overrides ───────────────────────────────────────────────
+   Maps video IDs to the actual on-disk filename (without .mp4) when the
+   UI title doesn't match — compound IDs, abbreviations (COPD), `&` vs
+   `and`, source-side typos, etc. */
 const FILENAME_OVERRIDES = {
+  // Compound IDs
   '5.6-5.7':    '5.6 _ 5.7 Normocytic Anemias with Intravascular Hemolysis _ Anemia due to Underproduction',
   '6.5-6.7':    '6.5-6.7 LAD, Lymphoma, Hodgkin Lymphoma',
   '6.8-6.9':    '6.8-6.9 Plasma Cell Disorders',
@@ -292,6 +296,19 @@ const FILENAME_OVERRIDES = {
   '15.3-15.7':  '15.3_15.7 Thyroid Gland',
   '15.10-15.11':'15.10 _ 15.11 Adrenal Cortex _ Adrenal Medulla',
   '17.5-17.6':  '17.5 _ 17.6 Trauma _ Demyelinating Disorders',
+
+  // UI title vs on-disk filename mismatches
+  '5.5':   '5.5 Normocytic Anemias with Extravascular Hemolysis',
+  '6.1':   '6.1 Leukopenia and Leukocytosis',
+  '7.3':   '7.3 Atheriosclerosis',                                  // disk-side typo
+  '7.4':   '7.4 Aortic Dissection and Aneurysm',
+  '9.4':   '9.4 Chronic Obstructive Pulmonary Disease',
+  '11.2':  '11.2 Gallbladder and Biliary Tract',
+  '13.4':  '13.4 Endometrium and Myometrium',
+  '16.1':  '16.1 Breast Pathology Introduction',
+  '16.3':  '16.3 Benign Tumors and Fibrocystic Changes',
+  '17.7':  '17.7 Dementia and Degenerative Disorders',
+  '19.4':  '19.4 Disorders of Pigmentation and Melanocytes',
 };
 
 function _buildVideoSrc(ch, vid) {

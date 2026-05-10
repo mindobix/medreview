@@ -718,7 +718,7 @@
         <div class="placeholder-title">Pathoma Video Viewer</div>
         <div class="placeholder-sub">Select a chapter from the top nav, then click any video in the sidebar to start watching. Your progress is saved automatically.</div>
       </div>
-      <video id="video-player" controls style="display:none"></video>
+      <video id="video-player" controls preload="metadata" playsinline style="display:none"></video>
     </div>
 
     <div id="video-info-bar">
@@ -2283,8 +2283,11 @@ function _rawFilename(ch, vid) {
     '15.3-15.7': '15.3_15.7 Thyroid Gland',
     '15.10-15.11':'15.10 _ 15.11 Adrenal Cortex _ Adrenal Medulla',
     '17.5-17.6': '17.5 _ 17.6 Trauma _ Demyelinating Disorders',
+    '5.5':   '5.5 Normocytic Anemias with Extravascular Hemolysis',
     '6.1':   '6.1 Leukopenia and Leukocytosis',
+    '7.3':   '7.3 Atheriosclerosis',
     '7.4':   '7.4 Aortic Dissection and Aneurysm',
+    '9.4':   '9.4 Chronic Obstructive Pulmonary Disease',
     '11.2':  '11.2 Gallbladder and Biliary Tract',
     '13.4':  '13.4 Endometrium and Myometrium',
     '16.3':  '16.3 Benign Tumors and Fibrocystic Changes',
@@ -2460,6 +2463,24 @@ function playVideo(flatIdx) {
   const placeholder = document.getElementById('video-placeholder');
 
   const src = _buildVideoSrc(chapter, video);
+
+  // Install error handler BEFORE assigning src. Only treat it as a real failure
+  // if the element's currentSrc actually points at the file we tried to load —
+  // this avoids spurious "format error" reports from aborted/empty loads.
+  player.onerror = () => {
+    if (!player.currentSrc || !player.currentSrc.endsWith(src.split('/').pop())) return;
+    const err = player.error;
+    const codeMap = { 1: 'ABORTED', 2: 'NETWORK', 3: 'DECODE', 4: 'SRC_NOT_SUPPORTED' };
+    const why = err ? (codeMap[err.code] || err.code) + (err.message ? ' — ' + err.message : '') : 'unknown';
+    console.error('[video] failed to load', player.currentSrc, why);
+    placeholder.style.display = 'flex';
+    player.style.display = 'none';
+    placeholder.querySelector('.placeholder-sub').textContent =
+      'Could not load video (' + why + '). Resolved URL: ' + player.currentSrc;
+  };
+
+  // Setting src is enough — the browser aborts any prior load and starts the new one.
+  // Do NOT removeAttribute+load() first; that fires a phantom code-4 error.
   player.src = src;
   player.style.display = 'block';
   placeholder.style.display = 'none';
